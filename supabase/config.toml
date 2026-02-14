@@ -2,3 +2,6 @@ project_id = "kbvskmhuwqjogoplocpc"
 
 [functions.pregnancy-chat]
 verify_jwt = false
+
+[functions.analyze-food-photo]
+verify_jwt = false

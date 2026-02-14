@@ -4,7 +4,7 @@ import { getProfile, getDailyLog, getTodayKey, getConsecutiveLowDays, updateFood
 import { getTrimester, getTrimesterLabel, getWeekRange, getRecommendations } from '@/lib/recommendations';
 import { useNavigate } from 'react-router-dom';
 import { Lightbulb, AlertTriangle } from 'lucide-react';
-import type { UserProfile, DailyLog, NutrientKey, FoodEntry, NutrientTotals } from '@/lib/types';
+import type { UserProfile, DailyLog, NutrientKey, FoodEntry, NutrientTotals, DietaryRestriction, Allergy } from '@/lib/types';
 
 export default function Dashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -265,7 +265,7 @@ export default function Dashboard() {
       </div>
 
       {/* Smart Tips */}
-      <SmartTips totals={log.totals} recommendations={recommendations} trimester={trimester} />
+      <SmartTips totals={log.totals} recommendations={recommendations} trimester={trimester} restrictions={profile.dietaryRestrictions || []} allergies={profile.allergies || []} />
 
       {/* Disclaimer */}
       <div className="mt-6 pt-4 border-t border-border">
@@ -278,18 +278,84 @@ export default function Dashboard() {
   );
 }
 
-// Nutrient boost suggestions keyed by nutrient
-const boostFoods: Record<NutrientKey, string[]> = {
-  dha: ['salmon', 'sardines', 'walnuts', 'chia seeds'],
-  iron: ['spinach', 'lentils', 'fortified cereal', 'lean beef'],
-  folate: ['lentils', 'asparagus', 'spinach', 'fortified cereal'],
-  calcium: ['yogurt', 'tofu', 'sardines', 'kale'],
-  protein: ['chicken breast', 'greek yogurt', 'lentils', 'eggs'],
-  vitaminD: ['salmon', 'fortified milk', 'eggs', 'sardines'],
-  vitaminC: ['oranges', 'strawberries', 'broccoli', 'bell peppers'],
-  zinc: ['lean beef', 'pumpkin seeds', 'lentils', 'yogurt'],
-  omega3: ['salmon', 'chia seeds', 'walnuts', 'sardines'],
+// Nutrient boost suggestions keyed by nutrient, with diet-aware alternatives
+const boostFoods: Record<NutrientKey, { food: string; excludeFor?: (DietaryRestriction | Allergy)[] }[]> = {
+  dha: [
+    { food: 'salmon', excludeFor: ['Vegetarian', 'Vegan', 'Fish'] },
+    { food: 'sardines', excludeFor: ['Vegetarian', 'Vegan', 'Fish'] },
+    { food: 'walnuts', excludeFor: ['Tree Nuts'] },
+    { food: 'chia seeds' },
+    { food: 'flaxseed oil' },
+    { food: 'algae-based DHA supplement' },
+  ],
+  iron: [
+    { food: 'spinach' },
+    { food: 'lentils' },
+    { food: 'fortified cereal', excludeFor: ['Gluten-Free'] },
+    { food: 'lean beef', excludeFor: ['Vegetarian', 'Vegan', 'Pescatarian'] },
+    { food: 'tofu', excludeFor: ['Soy'] },
+    { food: 'pumpkin seeds' },
+  ],
+  folate: [
+    { food: 'lentils' },
+    { food: 'asparagus' },
+    { food: 'spinach' },
+    { food: 'fortified cereal', excludeFor: ['Gluten-Free'] },
+    { food: 'avocado' },
+    { food: 'broccoli' },
+  ],
+  calcium: [
+    { food: 'yogurt', excludeFor: ['Vegan', 'Dairy-Free', 'Milk'] },
+    { food: 'tofu', excludeFor: ['Soy'] },
+    { food: 'sardines', excludeFor: ['Vegetarian', 'Vegan', 'Fish'] },
+    { food: 'kale' },
+    { food: 'fortified plant milk', excludeFor: ['Soy'] },
+    { food: 'broccoli' },
+  ],
+  protein: [
+    { food: 'chicken breast', excludeFor: ['Vegetarian', 'Vegan', 'Pescatarian'] },
+    { food: 'greek yogurt', excludeFor: ['Vegan', 'Dairy-Free', 'Milk'] },
+    { food: 'lentils' },
+    { food: 'eggs', excludeFor: ['Vegan', 'Eggs'] },
+    { food: 'tofu', excludeFor: ['Soy'] },
+    { food: 'quinoa' },
+    { food: 'hemp seeds' },
+  ],
+  vitaminD: [
+    { food: 'salmon', excludeFor: ['Vegetarian', 'Vegan', 'Fish'] },
+    { food: 'fortified milk', excludeFor: ['Vegan', 'Dairy-Free', 'Milk'] },
+    { food: 'eggs', excludeFor: ['Vegan', 'Eggs'] },
+    { food: 'fortified plant milk' },
+    { food: 'mushrooms (UV-exposed)' },
+  ],
+  vitaminC: [
+    { food: 'oranges' },
+    { food: 'strawberries' },
+    { food: 'broccoli' },
+    { food: 'bell peppers' },
+  ],
+  zinc: [
+    { food: 'lean beef', excludeFor: ['Vegetarian', 'Vegan', 'Pescatarian'] },
+    { food: 'pumpkin seeds' },
+    { food: 'lentils' },
+    { food: 'yogurt', excludeFor: ['Vegan', 'Dairy-Free', 'Milk'] },
+    { food: 'chickpeas' },
+  ],
+  omega3: [
+    { food: 'salmon', excludeFor: ['Vegetarian', 'Vegan', 'Fish'] },
+    { food: 'chia seeds' },
+    { food: 'walnuts', excludeFor: ['Tree Nuts'] },
+    { food: 'sardines', excludeFor: ['Vegetarian', 'Vegan', 'Fish'] },
+    { food: 'flaxseeds' },
+  ],
 };
+
+function getSafeFoods(key: NutrientKey, restrictions: DietaryRestriction[], allergies: Allergy[]): string[] {
+  const excluded = new Set<string>([...restrictions, ...allergies]);
+  return boostFoods[key]
+    .filter(f => !f.excludeFor?.some(e => excluded.has(e)))
+    .map(f => f.food);
+}
 
 // Nutrient interaction cautions
 const nutrientConflicts: { condition: (t: NutrientTotals) => boolean; icon: 'caution'; text: string }[] = [
@@ -314,9 +380,11 @@ interface SmartTipsProps {
   totals: NutrientTotals;
   recommendations: { name: string; key: NutrientKey; target: number; unit: string }[];
   trimester: number;
+  restrictions: DietaryRestriction[];
+  allergies: Allergy[];
 }
 
-function SmartTips({ totals, recommendations, trimester }: SmartTipsProps) {
+function SmartTips({ totals, recommendations, trimester, restrictions, allergies }: SmartTipsProps) {
   const tips = useMemo(() => {
     const result: { type: 'boost' | 'caution'; text: string }[] = [];
 
@@ -324,11 +392,13 @@ function SmartTips({ totals, recommendations, trimester }: SmartTipsProps) {
     for (const r of recommendations) {
       const pct = r.target > 0 ? (totals[r.key] / r.target) * 100 : 100;
       if (pct < 50) {
-        const foods = boostFoods[r.key];
-        result.push({
-          type: 'boost',
-          text: `You can boost ${r.name} by eating more ${foods[0]}, ${foods[1]}, or ${foods[2]}.`,
-        });
+        const foods = getSafeFoods(r.key, restrictions, allergies);
+        if (foods.length >= 2) {
+          result.push({
+            type: 'boost',
+            text: `You can boost ${r.name} by eating more ${foods[0]}, ${foods[1]}${foods[2] ? `, or ${foods[2]}` : ''}.`,
+          });
+        }
       }
     }
 
@@ -341,14 +411,16 @@ function SmartTips({ totals, recommendations, trimester }: SmartTipsProps) {
 
     // Trimester-specific tip
     if (trimester === 1 && totals.folate < 300) {
-      result.push({ type: 'boost', text: 'First trimester is critical for folate — try adding fortified cereal or lentils to reach 600mcg.' });
+      const folateFoods = getSafeFoods('folate', restrictions, allergies);
+      result.push({ type: 'boost', text: `First trimester is critical for folate — try adding ${folateFoods[0] || 'folate-rich foods'} or ${folateFoods[1] || 'a prenatal vitamin'} to reach 600mcg.` });
     }
     if (trimester >= 2 && totals.dha < 100) {
-      result.push({ type: 'boost', text: `DHA needs increase in trimester ${trimester}. Salmon or a prenatal with DHA can help reach your target.` });
+      const dhaFoods = getSafeFoods('dha', restrictions, allergies);
+      result.push({ type: 'boost', text: `DHA needs increase in trimester ${trimester}. ${dhaFoods[0] || 'A prenatal with DHA'} can help reach your target.` });
     }
 
-    return result.slice(0, 4); // max 4 tips
-  }, [totals, recommendations, trimester]);
+    return result.slice(0, 4);
+  }, [totals, recommendations, trimester, restrictions, allergies]);
 
   if (tips.length === 0) return null;
 

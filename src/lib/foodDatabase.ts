@@ -80,7 +80,11 @@ export const foodDatabase: FoodItem[] = [
   // Cautionary foods
   { id: 'f31', name: 'Tuna Steak', category: 'Protein', servingSize: '100g', nutrients: { folate: 2, iron: 1.0, calcium: 12, protein: 30, dha: 250, vitaminD: 5.7, vitaminC: 0, zinc: 0.6, omega3: 500 } },
   { id: 'f32', name: 'Canned Tuna (Light)', category: 'Protein', servingSize: '100g', nutrients: { folate: 3, iron: 1.4, calcium: 11, protein: 26, dha: 200, vitaminD: 1.7, vitaminC: 0, zinc: 0.8, omega3: 400 } },
-  { id: 'f33', name: 'Coffee', category: 'Beverage', servingSize: '1 cup (240ml)', nutrients: { folate: 0, iron: 0, calcium: 5, protein: 0.3, dha: 0 } },
+  { id: 'f33', name: 'Coffee', category: 'Beverage', servingSize: '1 cup (240ml)', nutrients: { folate: 0, iron: 0, calcium: 5, protein: 0.3, dha: 0, caffeine: 95 } },
+  { id: 'f38', name: 'Decaf Coffee', category: 'Beverage', servingSize: '1 cup (240ml)', nutrients: { folate: 0, iron: 0, calcium: 5, protein: 0.3, dha: 0, caffeine: 3 } },
+  { id: 'f39', name: 'Black Tea', category: 'Beverage', servingSize: '1 cup (240ml)', nutrients: { folate: 0, iron: 0, calcium: 0, protein: 0, dha: 0, caffeine: 47 } },
+  { id: 'f40', name: 'Green Tea', category: 'Beverage', servingSize: '1 cup (240ml)', nutrients: { folate: 0, iron: 0, calcium: 0, protein: 0, dha: 0, caffeine: 28 } },
+  { id: 'f41', name: 'Espresso', category: 'Beverage', servingSize: '1 shot (30ml)', nutrients: { folate: 0, iron: 0, calcium: 2, protein: 0, dha: 0, caffeine: 63 } },
   { id: 'f34', name: 'Soft Cheese (Unpasteurized)', category: 'Dairy', servingSize: '30g', nutrients: { folate: 6, iron: 0.1, calcium: 150, protein: 6, dha: 0, vitaminD: 0.2, vitaminC: 0, zinc: 0.6, omega3: 0 } },
   { id: 'f35', name: 'Raw Sushi', category: 'Protein', servingSize: '6 pieces', nutrients: { folate: 5, iron: 0.5, calcium: 10, protein: 15, dha: 300, vitaminD: 2, vitaminC: 0, zinc: 0.4, omega3: 600 } },
   { id: 'f36', name: 'Deli Meat', category: 'Protein', servingSize: '100g', nutrients: { folate: 2, iron: 0.8, calcium: 10, protein: 18, dha: 0, vitaminD: 0.1, vitaminC: 0, zinc: 1.8, omega3: 0 } },

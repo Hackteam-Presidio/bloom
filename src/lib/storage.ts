@@ -3,7 +3,7 @@ import { UserProfile, DailyLog, FoodEntry, NutrientTotals } from './types';
 const PROFILE_KEY = 'bloom_profile';
 const LOGS_KEY = 'bloom_logs';
 
-const emptyTotals: NutrientTotals = { folate: 0, iron: 0, calcium: 0, protein: 0, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 0, omega3: 0 };
+const emptyTotals: NutrientTotals = { folate: 0, iron: 0, calcium: 0, protein: 0, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 0, omega3: 0, caffeine: 0 };
 
 export function getProfile(): UserProfile | null {
   const data = localStorage.getItem(PROFILE_KEY);
@@ -98,10 +98,11 @@ function recalcTotals(entries: FoodEntry[]): NutrientTotals {
       calcium: acc.calcium + (e.nutrients.calcium || 0),
       protein: acc.protein + (e.nutrients.protein || 0),
       dha: acc.dha + (e.nutrients.dha || 0),
-      vitaminD: acc.vitaminD + (e.nutrients.vitaminD || 0),
-      vitaminC: acc.vitaminC + (e.nutrients.vitaminC || 0),
-      zinc: acc.zinc + (e.nutrients.zinc || 0),
-      omega3: acc.omega3 + (e.nutrients.omega3 || 0),
+      vitaminD: (acc.vitaminD || 0) + (e.nutrients.vitaminD || 0),
+      vitaminC: (acc.vitaminC || 0) + (e.nutrients.vitaminC || 0),
+      zinc: (acc.zinc || 0) + (e.nutrients.zinc || 0),
+      omega3: (acc.omega3 || 0) + (e.nutrients.omega3 || 0),
+      caffeine: (acc.caffeine || 0) + (e.nutrients.caffeine || 0),
     }),
     { ...emptyTotals }
   );

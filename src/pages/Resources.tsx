@@ -75,7 +75,7 @@ export default function Resources() {
               <div key={t.key} className="rounded-lg border border-border px-4 py-3">
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-sm font-medium text-foreground">{t.name}</p>
-                  <span className="text-xs font-mono text-muted-foreground">
+                  <span className="text-xs font-serif text-muted-foreground">
                     <span style={{ color: colorMap[t.key] }}>{current.toFixed(t.key === 'protein' ? 0 : 1)}</span>
                     {' / '}{t.target}{t.unit}
                   </span>

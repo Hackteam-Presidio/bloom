@@ -184,7 +184,7 @@ export default function FoodLog() {
       <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
         <button
           onClick={() => { setShowManual(!showManual); setSelectedFood(null); }}
-          className={`shrink-0 text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
+          className={`shrink-0 text-xs font-serif uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
             showManual ? 'bg-primary text-primary-foreground border-primary' : 'ghost-button'
           }`}
         >
@@ -194,7 +194,7 @@ export default function FoodLog() {
           <button
             key={cat}
             onClick={() => { setSelectedCategory(cat === selectedCategory ? null : cat); setQuery(''); setShowManual(false); setSelectedFood(null); }}
-            className={`shrink-0 text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
+            className={`shrink-0 text-xs font-serif uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
               selectedCategory === cat ? 'bg-primary text-primary-foreground border-primary' : 'ghost-button'
             }`}
           >
@@ -212,7 +212,7 @@ export default function FoodLog() {
           <div className="grid grid-cols-2 gap-2">
             {(['protein', 'iron', 'folate', 'calcium', 'dha'] as const).map(key => (
               <div key={key}>
-                <label className="text-[0.6rem] font-mono uppercase tracking-wider text-muted-foreground">
+                <label className="text-[0.6rem] font-serif uppercase tracking-wider text-muted-foreground">
                   {key} ({key === 'protein' ? 'g' : key === 'folate' ? 'mcg' : 'mg'})
                 </label>
                 <input type="number" step="0.1" min="0" value={manualNutrients[key] || ''} onChange={e => setManualNutrients(prev => ({ ...prev, [key]: parseFloat(e.target.value) || 0 }))} className="w-full bg-background border border-border rounded-md px-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary" />
@@ -242,7 +242,7 @@ export default function FoodLog() {
 
           {/* Quantity controls */}
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Qty</span>
+            <span className="text-xs font-serif uppercase tracking-wider text-muted-foreground">Qty</span>
             <div className="flex items-center gap-0 border border-border rounded-md overflow-hidden">
               <button
                 onClick={() => setQuantity(q => Math.max(0.5, q - 0.5))}
@@ -263,7 +263,7 @@ export default function FoodLog() {
           <div className="grid grid-cols-5 gap-1 mb-3">
             {(['protein', 'iron', 'folate', 'calcium', 'dha'] as const).map(key => (
               <div key={key} className="text-center">
-                <p className="text-[0.6rem] font-mono uppercase tracking-wider text-muted-foreground">{key}</p>
+                <p className="text-[0.6rem] font-serif uppercase tracking-wider text-muted-foreground">{key}</p>
                 <p className="text-xs font-medium text-foreground">
                   {(selectedFood.nutrients[key] * quantity).toFixed(key === 'protein' ? 0 : 1)}
                 </p>
@@ -298,7 +298,7 @@ export default function FoodLog() {
               {cautionPopup.caution.reason}
             </p>
             <div>
-              <p className="text-[0.65rem] font-mono uppercase tracking-wider text-muted-foreground mb-2">Safer Alternatives</p>
+              <p className="text-[0.65rem] font-serif uppercase tracking-wider text-muted-foreground mb-2">Safer Alternatives</p>
               <div className="space-y-1.5">
                 {cautionPopup.caution.substitutes.map(sub => (
                   <div key={sub} className="flex items-center gap-2 rounded-md border border-primary/20 bg-primary/5 px-3 py-2">
@@ -332,7 +332,7 @@ export default function FoodLog() {
                     <div className="flex items-center gap-1.5">
                       <p className="text-sm font-medium text-foreground">{food.name}</p>
                       {caution && (
-                        <span className={`text-[0.55rem] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                        <span className={`text-[0.55rem] font-serif uppercase tracking-wider px-1.5 py-0.5 rounded ${
                           caution.level === 'avoid' 
                             ? 'bg-destructive/10 text-destructive' 
                             : 'bg-warning/10 text-warning'

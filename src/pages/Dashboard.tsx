@@ -112,7 +112,7 @@ export default function Dashboard() {
           <p className="section-label">Daily Progress</p>
           <button
             onClick={() => setShowAllNutrients(prev => !prev)}
-            className="ghost-button text-xs px-3 py-1.5 rounded-md font-mono uppercase tracking-wider"
+            className="ghost-button text-xs px-3 py-1.5 rounded-md font-serif uppercase tracking-wider"
           >
             {showAllNutrients ? '− Less' : '+ More'}
           </button>
@@ -147,8 +147,8 @@ export default function Dashboard() {
             <div className="mt-4 flex items-center gap-3">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[0.65rem] font-mono uppercase tracking-wider text-muted-foreground">Caffeine</span>
-                  <span className={`text-[0.65rem] font-mono ${isOver ? 'text-destructive' : 'text-muted-foreground'}`}>
+                  <span className="text-[0.65rem] font-serif uppercase tracking-wider text-muted-foreground">Caffeine</span>
+                  <span className={`text-[0.65rem] font-serif ${isOver ? 'text-destructive' : 'text-muted-foreground'}`}>
                     {Math.round(caffeineTotal)}mg / 200mg
                   </span>
                 </div>
@@ -182,7 +182,7 @@ export default function Dashboard() {
           <p className="section-label">Today's Food Log</p>
           <button
             onClick={() => navigate('/log')}
-            className="ghost-button text-xs px-3 py-1.5 rounded-md font-mono uppercase tracking-wider"
+            className="ghost-button text-xs px-3 py-1.5 rounded-md font-serif uppercase tracking-wider"
           >
             + Add Food
           </button>
@@ -211,7 +211,7 @@ export default function Dashboard() {
                   <div className="grid grid-cols-3 gap-2">
                     {(['protein', 'iron', 'folate', 'calcium', 'dha'] as const).map(key => (
                       <div key={key}>
-                        <label className="text-[0.6rem] font-mono uppercase tracking-wider text-muted-foreground">
+                        <label className="text-[0.6rem] font-serif uppercase tracking-wider text-muted-foreground">
                           {key}
                         </label>
                         <input
@@ -226,13 +226,13 @@ export default function Dashboard() {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={saveEdit} className="flex-1 bg-primary text-primary-foreground rounded-md py-1.5 text-xs font-mono uppercase tracking-wider">
+                    <button onClick={saveEdit} className="flex-1 bg-primary text-primary-foreground rounded-md py-1.5 text-xs font-serif uppercase tracking-wider">
                       Save
                     </button>
-                    <button onClick={() => setEditingEntry(null)} className="flex-1 ghost-button rounded-md py-1.5 text-xs font-mono uppercase tracking-wider">
+                    <button onClick={() => setEditingEntry(null)} className="flex-1 ghost-button rounded-md py-1.5 text-xs font-serif uppercase tracking-wider">
                       Cancel
                     </button>
-                    <button onClick={() => deleteEntry(entry.id)} className="ghost-button rounded-md py-1.5 text-xs font-mono uppercase tracking-wider text-destructive border-destructive/30 hover:border-destructive">
+                    <button onClick={() => deleteEntry(entry.id)} className="ghost-button rounded-md py-1.5 text-xs font-serif uppercase tracking-wider text-destructive border-destructive/30 hover:border-destructive">
                       Delete
                     </button>
                   </div>

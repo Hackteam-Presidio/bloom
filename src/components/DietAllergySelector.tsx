@@ -35,7 +35,7 @@ export function DietAllergySelector({ dietaryRestrictions, allergies, onRestrict
               key={r}
               type="button"
               onClick={() => toggleRestriction(r)}
-              className={`text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
+              className={`text-xs font-serif uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
                 dietaryRestrictions.includes(r)
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'ghost-button'
@@ -56,7 +56,7 @@ export function DietAllergySelector({ dietaryRestrictions, allergies, onRestrict
               key={a}
               type="button"
               onClick={() => toggleAllergy(a)}
-              className={`text-xs font-mono uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
+              className={`text-xs font-serif uppercase tracking-wider px-3 py-1.5 rounded-md border transition-colors ${
                 allergies.includes(a)
                   ? 'bg-destructive/90 text-destructive-foreground border-destructive'
                   : 'ghost-button'

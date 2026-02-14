@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Comfortaa:wght@300;400;500;600;700&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
 
@@ -139,13 +139,13 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-semibold tracking-tight;
+    @apply font-display font-semibold tracking-tight;
   }
 }
 
 @layer components {
   .section-label {
-    @apply font-mono text-[0.65rem] uppercase tracking-[0.15em] text-muted-foreground;
+    @apply font-serif text-[0.65rem] uppercase tracking-[0.15em] text-muted-foreground;
   }
 
   .nutrient-ring {

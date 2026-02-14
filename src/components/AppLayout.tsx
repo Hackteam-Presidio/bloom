@@ -19,7 +19,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Header */}
       <header className="flex items-center justify-between px-5 py-4 border-b border-border">
         <Link to="/" className="flex items-center gap-1.5">
-          <span className="text-lg font-extrabold tracking-tight text-foreground" style={{ fontFamily: "'Nunito', sans-serif" }}>Bloom</span>
+          <span className="text-lg font-extrabold tracking-tight text-foreground font-display">Bloom</span>
           <BloomFlower className="w-5 h-5" />
         </Link>
         <ThemeToggle />
@@ -45,7 +45,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round">
                 <path d={item.icon} />
               </svg>
-              <span className="text-[0.6rem] font-mono uppercase tracking-wider">{item.label}</span>
+              <span className="text-[0.6rem] font-serif uppercase tracking-wider">{item.label}</span>
             </Link>
           );
         })}

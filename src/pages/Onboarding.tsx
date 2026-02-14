@@ -1,17 +1,26 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { saveProfile } from '@/lib/storage';
+import { DietAllergySelector } from '@/components/DietAllergySelector';
+import type { DietaryRestriction, Allergy } from '@/lib/types';
 
 export default function Onboarding() {
   const [weeks, setWeeks] = useState('');
   const [name, setName] = useState('');
+  const [dietaryRestrictions, setDietaryRestrictions] = useState<DietaryRestriction[]>([]);
+  const [allergies, setAllergies] = useState<Allergy[]>([]);
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const w = parseInt(weeks);
     if (w < 1 || w > 42 || isNaN(w)) return;
-    saveProfile({ gestationalAgeWeeks: w, name: name.trim() || undefined });
+    saveProfile({
+      gestationalAgeWeeks: w,
+      name: name.trim() || undefined,
+      dietaryRestrictions: dietaryRestrictions.length > 0 ? dietaryRestrictions : undefined,
+      allergies: allergies.length > 0 ? allergies : undefined,
+    });
     navigate('/');
   };
 
@@ -60,6 +69,13 @@ export default function Onboarding() {
               Enter your current week of pregnancy (1 – 42)
             </p>
           </div>
+
+          <DietAllergySelector
+            dietaryRestrictions={dietaryRestrictions}
+            allergies={allergies}
+            onRestrictionsChange={setDietaryRestrictions}
+            onAllergiesChange={setAllergies}
+          />
 
           <button
             type="submit"

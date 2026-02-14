@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
+import bloomLogo from '@/assets/bloom-logo.png';
 
 const navItems = [
   { path: '/', label: 'Today', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -18,13 +19,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Header */}
       <header className="flex items-center justify-between px-5 py-4 border-b border-border">
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary-foreground))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22c6-3 10-9.5 10-13A10 10 0 0 0 2 9c0 3.5 4 10 10 13z" />
-              <path d="M12 22c-6-3-10-9.5-10-13" />
-            </svg>
-          </div>
-          <span className="font-semibold text-sm tracking-tight text-foreground">Bloom</span>
+          <img src={bloomLogo} alt="Bloom" className="h-7" />
         </Link>
         <ThemeToggle />
       </header>

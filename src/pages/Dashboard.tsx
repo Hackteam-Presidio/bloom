@@ -122,6 +122,25 @@ export default function Dashboard() {
             );
           })}
         </div>
+
+        {/* Caffeine warning bar */}
+        <div className="mt-4 flex items-center gap-3">
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[0.65rem] font-mono uppercase tracking-wider text-muted-foreground">Caffeine Limit</span>
+              <span className="text-[0.65rem] font-mono text-destructive">≤ 200mg/day</span>
+            </div>
+            <div className="relative h-2 w-full overflow-hidden rounded-full bg-destructive/10">
+              <div className="h-full rounded-full bg-destructive/80 transition-all" style={{ width: '100%' }} />
+            </div>
+            <p className="text-[0.6rem] text-destructive/70 mt-1">Keep caffeine under 200mg — about 1 cup of coffee</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--destructive))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
       </div>
 
       {/* Today's entries */}

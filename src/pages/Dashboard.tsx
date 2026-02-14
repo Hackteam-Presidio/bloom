@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { NutrientRing } from '@/components/NutrientRing';
 import { getProfile, getDailyLog, getTodayKey, getConsecutiveLowDays, updateFoodEntry, removeFoodEntry } from '@/lib/storage';
 import { getTrimester, getTrimesterLabel, getWeekRange, getRecommendations } from '@/lib/recommendations';
 import { useNavigate } from 'react-router-dom';
+import { Lightbulb, AlertTriangle } from 'lucide-react';
 import type { UserProfile, DailyLog, NutrientKey, FoodEntry, NutrientTotals } from '@/lib/types';
 
 export default function Dashboard() {
@@ -231,12 +232,111 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Smart Tips */}
+      <SmartTips totals={log.totals} recommendations={recommendations} trimester={trimester} />
+
       {/* Disclaimer */}
-      <div className="mt-8 pt-4 border-t border-border">
+      <div className="mt-6 pt-4 border-t border-border">
         <p className="disclaimer-text">
           For informational use only. Nutrient recommendations from NIH Office of Dietary Supplements.
           This app is not a substitute for medical advice. Consult your healthcare provider.
         </p>
+      </div>
+    </div>
+  );
+}
+
+// Nutrient boost suggestions keyed by nutrient
+const boostFoods: Record<NutrientKey, string[]> = {
+  dha: ['salmon', 'sardines', 'walnuts', 'chia seeds'],
+  iron: ['spinach', 'lentils', 'fortified cereal', 'lean beef'],
+  folate: ['lentils', 'asparagus', 'spinach', 'fortified cereal'],
+  calcium: ['yogurt', 'tofu', 'sardines', 'kale'],
+  protein: ['chicken breast', 'greek yogurt', 'lentils', 'eggs'],
+};
+
+// Nutrient interaction cautions
+const nutrientConflicts: { condition: (t: NutrientTotals) => boolean; icon: 'caution'; text: string }[] = [
+  {
+    condition: (t) => t.iron > 15 && t.calcium > 500,
+    icon: 'caution',
+    text: 'High calcium can inhibit iron absorption. Try spacing calcium-rich and iron-rich foods apart by 2 hours.',
+  },
+  {
+    condition: (t) => t.iron > 10 && t.dha < 50,
+    icon: 'caution',
+    text: "You're getting iron but low DHA today. Pair iron-rich meals with a DHA source like salmon or walnuts for balanced development.",
+  },
+  {
+    condition: (t) => t.folate > 400 && t.iron < 5,
+    icon: 'caution',
+    text: 'Good folate intake, but iron is low. Folate and iron work together — add spinach or lentils which provide both.',
+  },
+];
+
+interface SmartTipsProps {
+  totals: NutrientTotals;
+  recommendations: { name: string; key: NutrientKey; target: number; unit: string }[];
+  trimester: number;
+}
+
+function SmartTips({ totals, recommendations, trimester }: SmartTipsProps) {
+  const tips = useMemo(() => {
+    const result: { type: 'boost' | 'caution'; text: string }[] = [];
+
+    // Boost tips for low nutrients
+    for (const r of recommendations) {
+      const pct = r.target > 0 ? (totals[r.key] / r.target) * 100 : 100;
+      if (pct < 50) {
+        const foods = boostFoods[r.key];
+        result.push({
+          type: 'boost',
+          text: `You can boost ${r.name} by eating more ${foods[0]}, ${foods[1]}, or ${foods[2]}.`,
+        });
+      }
+    }
+
+    // Nutrient conflict cautions
+    for (const conflict of nutrientConflicts) {
+      if (conflict.condition(totals)) {
+        result.push({ type: 'caution', text: conflict.text });
+      }
+    }
+
+    // Trimester-specific tip
+    if (trimester === 1 && totals.folate < 300) {
+      result.push({ type: 'boost', text: 'First trimester is critical for folate — try adding fortified cereal or lentils to reach 600mcg.' });
+    }
+    if (trimester >= 2 && totals.dha < 100) {
+      result.push({ type: 'boost', text: `DHA needs increase in trimester ${trimester}. Salmon or a prenatal with DHA can help reach your target.` });
+    }
+
+    return result.slice(0, 4); // max 4 tips
+  }, [totals, recommendations, trimester]);
+
+  if (tips.length === 0) return null;
+
+  return (
+    <div className="mt-6">
+      <p className="section-label mb-3">Tips for You</p>
+      <div className="space-y-2">
+        {tips.map((tip, i) => (
+          <div
+            key={i}
+            className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${
+              tip.type === 'caution'
+                ? 'border-warning/30 bg-warning/5'
+                : 'border-primary/20 bg-primary/5'
+            }`}
+          >
+            {tip.type === 'caution' ? (
+              <AlertTriangle size={15} className="mt-0.5 shrink-0 text-warning" />
+            ) : (
+              <Lightbulb size={15} className="mt-0.5 shrink-0 text-primary" />
+            )}
+            <p className="text-xs text-foreground leading-relaxed">{tip.text}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -7,7 +7,35 @@ const emptyTotals: NutrientTotals = { folate: 0, iron: 0, calcium: 0, protein: 0
 
 export function getProfile(): UserProfile | null {
   const data = localStorage.getItem(PROFILE_KEY);
-  return data ? JSON.parse(data) : null;
+  if (!data) return null;
+  const profile: UserProfile = JSON.parse(data);
+
+  // Auto-advance gestational weeks based on due date or LMP
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (profile.dueDate) {
+    const due = new Date(profile.dueDate);
+    due.setHours(0, 0, 0, 0);
+    const diffMs = due.getTime() - today.getTime();
+    const weeksLeft = diffMs / (1000 * 60 * 60 * 24 * 7);
+    const currentWeek = Math.round(40 - weeksLeft);
+    profile.gestationalAgeWeeks = Math.max(1, Math.min(42, currentWeek));
+  } else if (profile.lastMenstrualDate) {
+    const lmp = new Date(profile.lastMenstrualDate);
+    lmp.setHours(0, 0, 0, 0);
+    const diffMs = today.getTime() - lmp.getTime();
+    const currentWeek = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7)) + 1;
+    profile.gestationalAgeWeeks = Math.max(1, Math.min(42, currentWeek));
+  } else if (profile.profileSetDate && profile.gestationalAgeAtSet) {
+    const setDate = new Date(profile.profileSetDate);
+    setDate.setHours(0, 0, 0, 0);
+    const diffMs = today.getTime() - setDate.getTime();
+    const weeksPassed = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7));
+    profile.gestationalAgeWeeks = Math.max(1, Math.min(42, profile.gestationalAgeAtSet + weeksPassed));
+  }
+
+  return profile;
 }
 
 export function saveProfile(profile: UserProfile): void {

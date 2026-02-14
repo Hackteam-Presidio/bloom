@@ -5,7 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { DietAllergySelector } from '@/components/DietAllergySelector';
 import type { DietaryRestriction, Allergy } from '@/lib/types';
 
+type InputMethod = 'dueDate' | 'lmp' | 'weeks';
+
 export default function Settings() {
+  const [method, setMethod] = useState<InputMethod>('weeks');
+  const [dueDate, setDueDate] = useState('');
+  const [lmpDate, setLmpDate] = useState('');
   const [weeks, setWeeks] = useState('');
   const [name, setName] = useState('');
   const [dietaryRestrictions, setDietaryRestrictions] = useState<DietaryRestriction[]>([]);
@@ -20,23 +25,49 @@ export default function Settings() {
     setName(p.name || '');
     setDietaryRestrictions(p.dietaryRestrictions || []);
     setAllergies(p.allergies || []);
+    if (p.dueDate) { setMethod('dueDate'); setDueDate(p.dueDate); }
+    else if (p.lastMenstrualDate) { setMethod('lmp'); setLmpDate(p.lastMenstrualDate); }
+    else { setMethod('weeks'); }
   }, [navigate]);
 
   const handleSave = () => {
-    const w = parseInt(weeks);
-    if (w < 1 || w > 42 || isNaN(w)) return;
-    saveProfile({
-      gestationalAgeWeeks: w,
+    const today = new Date().toISOString().split('T')[0];
+    const base = {
       name: name.trim() || undefined,
       dietaryRestrictions: dietaryRestrictions.length > 0 ? dietaryRestrictions : undefined,
       allergies: allergies.length > 0 ? allergies : undefined,
-    });
+    };
+
+    if (method === 'dueDate' && dueDate) {
+      const d = new Date(dueDate);
+      const now = new Date();
+      const weeksLeft = (d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24 * 7);
+      const w = Math.max(1, Math.min(42, Math.round(40 - weeksLeft)));
+      saveProfile({ ...base, gestationalAgeWeeks: w, dueDate });
+    } else if (method === 'lmp' && lmpDate) {
+      const d = new Date(lmpDate);
+      const now = new Date();
+      const w = Math.max(1, Math.min(42, Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24 * 7)) + 1));
+      saveProfile({ ...base, gestationalAgeWeeks: w, lastMenstrualDate: lmpDate });
+    } else {
+      const w = parseInt(weeks);
+      if (w < 1 || w > 42 || isNaN(w)) return;
+      saveProfile({ ...base, gestationalAgeWeeks: w, profileSetDate: today, gestationalAgeAtSet: w });
+    }
+
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const w = parseInt(weeks);
-  const trimester = !isNaN(w) && w >= 1 && w <= 42 ? getTrimester(w) : null;
+  const profile = getProfile();
+  const currentWeek = profile?.gestationalAgeWeeks ?? parseInt(weeks);
+  const trimester = !isNaN(currentWeek) && currentWeek >= 1 && currentWeek <= 42 ? getTrimester(currentWeek) : null;
+
+  const methods: { value: InputMethod; label: string }[] = [
+    { value: 'dueDate', label: 'Due Date' },
+    { value: 'lmp', label: 'Last Period' },
+    { value: 'weeks', label: 'Weeks' },
+  ];
 
   return (
     <div className="px-5 py-6 max-w-lg mx-auto animate-fade-in">
@@ -59,22 +90,78 @@ export default function Settings() {
           />
         </div>
 
+        {/* Current computed week (read-only) */}
+        {profile && (method === 'dueDate' || method === 'lmp') && (
+          <div className="rounded-lg border border-border bg-card/50 px-4 py-3">
+            <p className="section-label mb-1">Current Week</p>
+            <p className="text-lg font-bold text-foreground">Week {profile.gestationalAgeWeeks}</p>
+            {trimester && <p className="text-xs text-muted-foreground">{getTrimesterLabel(trimester)} · updates automatically</p>}
+          </div>
+        )}
+
+        {/* Method selector */}
         <div>
-          <label className="section-label block mb-2">Gestational Age (weeks)</label>
-          <input
-            type="number"
-            value={weeks}
-            onChange={e => setWeeks(e.target.value)}
-            min={1}
-            max={42}
-            className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
-          />
-          {trimester && (
-            <p className="text-xs text-muted-foreground mt-2">
-              {getTrimesterLabel(trimester)}
-            </p>
-          )}
+          <label className="section-label block mb-2">Pregnancy date method</label>
+          <div className="flex gap-2">
+            {methods.map(m => (
+              <button
+                key={m.value}
+                type="button"
+                onClick={() => setMethod(m.value)}
+                className={`flex-1 text-xs font-medium py-2 rounded-lg border transition-colors ${
+                  method === m.value
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card text-muted-foreground border-border hover:border-primary/50'
+                }`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {method === 'dueDate' && (
+          <div>
+            <label className="section-label block mb-2">Estimated Due Date</label>
+            <input
+              type="date"
+              value={dueDate}
+              onChange={e => setDueDate(e.target.value)}
+              className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
+        )}
+
+        {method === 'lmp' && (
+          <div>
+            <label className="section-label block mb-2">First Day of Last Menstrual Period</label>
+            <input
+              type="date"
+              value={lmpDate}
+              onChange={e => setLmpDate(e.target.value)}
+              className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
+        )}
+
+        {method === 'weeks' && (
+          <div>
+            <label className="section-label block mb-2">Gestational Age (weeks)</label>
+            <input
+              type="number"
+              value={weeks}
+              onChange={e => setWeeks(e.target.value)}
+              min={1}
+              max={42}
+              className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+            />
+            {trimester && (
+              <p className="text-xs text-muted-foreground mt-2">
+                {getTrimesterLabel(trimester)}
+              </p>
+            )}
+          </div>
+        )}
 
         <DietAllergySelector
           dietaryRestrictions={dietaryRestrictions}

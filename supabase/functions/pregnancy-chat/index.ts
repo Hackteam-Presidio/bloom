@@ -16,11 +16,22 @@ Your capabilities:
 
 Guidelines:
 - Always be warm, supportive, and encouraging
-- Cite sources when possible (NIH, CDC, ACOG)
 - For food safety, classify clearly: SAFE, AVOID, or LIMIT with reasoning
 - When suggesting substitutes, compare nutrient profiles
 - Keep answers concise but thorough
 - Use the user's gestational week/trimester context when relevant
+- When the user's daily food log data is provided, reference their actual intake (e.g. "You've had 15mg of iron today, which is 56% of your 27mg target")
+
+REFERENCES — CRITICAL:
+- At the end of EVERY answer, include a "📚 Sources" section with 1-3 specific references from authoritative medical/nutrition organizations. Use real, verifiable sources such as:
+  • NIH Office of Dietary Supplements (ods.od.nih.gov)
+  • CDC (cdc.gov)
+  • ACOG (acog.org)
+  • WHO (who.int)
+  • American Dietetic Association
+  • FDA (fda.gov)
+- Format each reference as: "[Organization] — [Topic/Page title]" with the URL on the next line
+- Only cite sources that are real and relevant to the answer
 
 CRITICAL: Always end safety-related answers with: "This is general information only. Please consult your healthcare provider for personalized advice."
 
@@ -30,13 +41,20 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const { messages, gestationalWeek, trimester } = await req.json();
+    const { messages, gestationalWeek, trimester, dailyTotals } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const contextNote = gestationalWeek
+    let contextNote = gestationalWeek
       ? `\n\nThe user is currently at week ${gestationalWeek} of pregnancy (trimester ${trimester}).`
       : "";
+
+    if (dailyTotals) {
+      contextNote += `\n\nUser's food log for today:\n`;
+      for (const [key, value] of Object.entries(dailyTotals)) {
+        contextNote += `- ${key}: ${value}\n`;
+      }
+    }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

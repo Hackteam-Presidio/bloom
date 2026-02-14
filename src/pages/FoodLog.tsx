@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { searchFoods, getFoodCategories, getFoodsByCategory, FoodItem } from '@/lib/foodDatabase';
+import { searchFoods, getFoodCategories, getFoodsByCategory, FoodItem, getFoodCaution, PregnancyCaution } from '@/lib/foodDatabase';
 import { addFoodEntry, getTodayKey, getProfile } from '@/lib/storage';
 import { useNavigate } from 'react-router-dom';
 import { NutrientTotals } from '@/lib/types';
 import { supabase } from '@/integrations/supabase/client';
+import { AlertTriangle, X, ShieldAlert } from 'lucide-react';
 
 export default function FoodLog() {
   const [query, setQuery] = useState('');
@@ -17,6 +18,7 @@ export default function FoodLog() {
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [photoAnalyzing, setPhotoAnalyzing] = useState(false);
+  const [cautionPopup, setCautionPopup] = useState<{ food: FoodItem; caution: PregnancyCaution } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const categories = getFoodCategories();
@@ -276,25 +278,86 @@ export default function FoodLog() {
         </div>
       )}
 
+      {/* Caution Popup */}
+      {cautionPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-5" onClick={() => setCautionPopup(null)}>
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+          <div className="relative w-full max-w-sm rounded-xl border border-destructive/30 bg-card p-5 shadow-lg animate-slide-up" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setCautionPopup(null)} className="absolute top-3 right-3 text-muted-foreground hover:text-foreground">
+              <X size={18} />
+            </button>
+            <div className="flex items-center gap-2 mb-3">
+              <ShieldAlert size={20} className="text-destructive shrink-0" />
+              <h3 className="text-sm font-bold text-foreground">
+                {cautionPopup.caution.level === 'avoid' ? 'AVOID' : 'LIMIT'} — {cautionPopup.food.name}
+              </h3>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+              {cautionPopup.caution.reason}
+            </p>
+            <div>
+              <p className="text-[0.65rem] font-mono uppercase tracking-wider text-muted-foreground mb-2">Safer Alternatives</p>
+              <div className="space-y-1.5">
+                {cautionPopup.caution.substitutes.map(sub => (
+                  <div key={sub} className="flex items-center gap-2 rounded-md border border-primary/20 bg-primary/5 px-3 py-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    <span className="text-xs text-foreground">{sub}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="disclaimer-text mt-4">
+              Source: FDA/EPA fish advisory, ACOG guidelines. Consult your healthcare provider.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Results */}
       {!showManual && !selectedFood && results.length > 0 && (
         <div className="space-y-2">
-          {results.map(food => (
-            <button
-              key={food.id}
-              onClick={() => { setSelectedFood(food); setQuantity(1); }}
-              className="w-full text-left flex items-center justify-between rounded-lg border border-border px-4 py-3 hover:border-primary transition-colors"
-            >
-              <div>
-                <p className="text-sm font-medium text-foreground">{food.name}</p>
-                <p className="text-xs text-muted-foreground">{food.servingSize}</p>
+          {results.map(food => {
+            const caution = getFoodCaution(food.name);
+            return (
+              <div key={food.id} className="relative flex items-center gap-0">
+                <button
+                  onClick={() => { setSelectedFood(food); setQuantity(1); }}
+                  className={`flex-1 text-left flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors ${
+                    caution ? 'border-destructive/30 pr-12' : 'border-border'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm font-medium text-foreground">{food.name}</p>
+                      {caution && (
+                        <span className={`text-[0.55rem] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                          caution.level === 'avoid' 
+                            ? 'bg-destructive/10 text-destructive' 
+                            : 'bg-warning/10 text-warning'
+                        }`}>
+                          {caution.level}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">{food.servingSize}</p>
+                  </div>
+                  <div className="text-right text-xs text-muted-foreground space-y-0.5">
+                    <p>{food.nutrients.protein}g prot</p>
+                    <p>{food.nutrients.iron}mg iron</p>
+                  </div>
+                </button>
+                {caution && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setCautionPopup({ food, caution }); }}
+                    className="absolute right-2 p-1.5 rounded-md hover:bg-destructive/10 transition-colors"
+                    title="Pregnancy caution"
+                  >
+                    <AlertTriangle size={18} className="text-destructive" />
+                  </button>
+                )}
               </div>
-              <div className="text-right text-xs text-muted-foreground space-y-0.5">
-                <p>{food.nutrients.protein}g prot</p>
-                <p>{food.nutrients.iron}mg iron</p>
-              </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
       )}
 

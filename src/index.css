@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -59,6 +61,8 @@
     --nutrient-vitaminC: 25 90% 55%;
     --nutrient-zinc: 260 40% 55%;
     --nutrient-omega3: 190 60% 45%;
+    --font-serif: Lora, ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
+    --font-sans: Lato, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   }
 
   .dark {
@@ -112,6 +116,8 @@
     --nutrient-vitaminC: 25 95% 60%;
     --nutrient-zinc: 260 45% 65%;
     --nutrient-omega3: 190 65% 55%;
+    --font-serif: Lora, ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
+    --font-sans: Lato, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   }
 }
 

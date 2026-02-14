@@ -69,33 +69,28 @@ export default function Resources() {
         <div className="space-y-2">
           {targets.map(t => {
             const desc = nutrientDescriptions[t.key];
+            const current = (log?.totals?.[t.key] ?? 0) as number;
+            const pct = Math.min(Math.round((current / t.target) * 100), 100);
             return (
-              <div key={t.key} className="relative rounded-lg border border-border px-4 py-3">
+              <div key={t.key} className="rounded-lg border border-border px-4 py-3">
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-sm font-medium text-foreground">{t.name}</p>
-                  <span className="text-xs font-mono text-primary">{t.target}{t.unit}/day</span>
+                  <span className="text-xs font-mono text-muted-foreground">
+                    <span style={{ color: colorMap[t.key] }}>{current.toFixed(t.key === 'protein' ? 0 : 1)}</span>
+                    {' / '}{t.target}{t.unit}
+                  </span>
+                </div>
+                {/* Progress bar */}
+                <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-muted mb-2">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${pct}%`, backgroundColor: colorMap[t.key] }}
+                  />
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">{desc.why}</p>
                 <p className="text-xs text-muted-foreground mt-1.5">
                   <span className="font-medium text-foreground/70">Best sources:</span> {desc.source}
                 </p>
-                {/* Mini progress ring */}
-                {(() => {
-                  const current = (log?.totals?.[t.key] ?? 0);
-                  const pct = Math.min(Math.round((current / t.target) * 100), 100);
-                  const r = 10;
-                  const sw = 2.5;
-                  const circ = 2 * Math.PI * r;
-                  const off = circ - (pct / 100) * circ;
-                  return (
-                    <div className="absolute bottom-2 right-3">
-                      <svg width="26" height="26" className="-rotate-90">
-                        <circle cx="13" cy="13" r={r} fill="none" stroke="hsl(var(--border))" strokeWidth={sw} />
-                        <circle cx="13" cy="13" r={r} fill="none" stroke={colorMap[t.key]} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={off} strokeLinecap="round" />
-                      </svg>
-                    </div>
-                  );
-                })()}
               </div>
             );
           })}

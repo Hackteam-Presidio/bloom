@@ -28,6 +28,11 @@ export type Allergy = typeof COMMON_ALLERGIES[number];
 export interface UserProfile {
   gestationalAgeWeeks: number;
   dueDate?: string;
+  lastMenstrualDate?: string;
+  /** ISO date when the profile was set — used to auto-advance weeks */
+  profileSetDate?: string;
+  /** The gestational age at the time profileSetDate was recorded */
+  gestationalAgeAtSet?: number;
   name?: string;
   dietaryRestrictions?: DietaryRestriction[];
   allergies?: Allergy[];

@@ -3,20 +3,26 @@ import { NutrientRing } from '@/components/NutrientRing';
 import { getProfile, getDailyLog, getTodayKey, getConsecutiveLowDays, updateFoodEntry, removeFoodEntry } from '@/lib/storage';
 import { getTrimester, getTrimesterLabel, getWeekRange, getRecommendations } from '@/lib/recommendations';
 import { useNavigate } from 'react-router-dom';
-import { Lightbulb, AlertTriangle } from 'lucide-react';
+import { Lightbulb, AlertTriangle, ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react';
+import { format, addDays, subDays, isToday, parseISO } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { UserProfile, DailyLog, NutrientKey, FoodEntry, NutrientTotals, DietaryRestriction, Allergy } from '@/lib/types';
 
 export default function Dashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [log, setLog] = useState<DailyLog | null>(null);
   const [editingEntry, setEditingEntry] = useState<FoodEntry | null>(null);
   const [editName, setEditName] = useState('');
   const [editServing, setEditServing] = useState('');
   const [editNutrients, setEditNutrients] = useState<NutrientTotals>({ folate: 0, iron: 0, calcium: 0, protein: 0, dha: 0 });
   const [showAllNutrients, setShowAllNutrients] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const navigate = useNavigate();
 
-  const refreshLog = () => setLog(getDailyLog(getTodayKey()));
+  const dateKey = selectedDate.toISOString().split('T')[0];
+  const refreshLog = () => setLog(getDailyLog(dateKey));
 
   useEffect(() => {
     const p = getProfile();
@@ -25,8 +31,11 @@ export default function Dashboard() {
       return;
     }
     setProfile(p);
-    refreshLog();
   }, [navigate]);
+
+  useEffect(() => {
+    refreshLog();
+  }, [dateKey]);
 
   const startEdit = (entry: FoodEntry) => {
     setEditingEntry(entry);
@@ -37,7 +46,7 @@ export default function Dashboard() {
 
   const saveEdit = () => {
     if (!editingEntry) return;
-    const updated = updateFoodEntry(getTodayKey(), editingEntry.id, {
+    const updated = updateFoodEntry(dateKey, editingEntry.id, {
       name: editName,
       servingSize: editServing,
       nutrients: { ...editNutrients },
@@ -47,7 +56,7 @@ export default function Dashboard() {
   };
 
   const deleteEntry = (id: string) => {
-    const updated = removeFoodEntry(getTodayKey(), id);
+    const updated = removeFoodEntry(dateKey, id);
     setLog(updated);
     setEditingEntry(null);
   };
@@ -56,6 +65,15 @@ export default function Dashboard() {
 
   const trimester = getTrimester(profile.gestationalAgeWeeks);
   const recommendations = getRecommendations(trimester);
+
+  const goToPreviousDay = () => setSelectedDate(prev => subDays(prev, 1));
+  const goToNextDay = () => setSelectedDate(prev => addDays(prev, 1));
+  const handleCalendarSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+      setCalendarOpen(false);
+    }
+  };
 
   const colorMap: Record<NutrientKey, string> = {
     folate: 'hsl(var(--nutrient-folate))',
@@ -69,7 +87,6 @@ export default function Dashboard() {
     omega3: 'hsl(var(--nutrient-omega3))',
   };
 
-  // Alerts for low nutrients
   const alerts = recommendations
     .map(r => {
       const days = getConsecutiveLowDays(r.key, r.target);
@@ -79,13 +96,57 @@ export default function Dashboard() {
 
   return (
     <div className="px-5 py-6 max-w-lg mx-auto animate-fade-in">
-      {/* Week & Trimester */}
+      {/* Date & Trimester Header */}
       <div className="mb-8">
-        <p className="section-label mb-1">{getWeekRange(trimester)}</p>
-        <h1 className="text-2xl font-bold text-foreground">
-          Week {profile.gestationalAgeWeeks}
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">{getTrimesterLabel(trimester)}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <button
+            onClick={goToPreviousDay}
+            className="p-1.5 rounded-md hover:bg-muted transition-colors"
+            aria-label="Previous day"
+          >
+            <ChevronLeft size={18} className="text-muted-foreground" />
+          </button>
+
+          <div className="flex items-center gap-2">
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  className="p-1.5 rounded-md hover:bg-muted transition-colors"
+                  aria-label="Open calendar"
+                >
+                  <CalendarIcon size={16} className="text-primary" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleCalendarSelect}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+
+            <h1 className="text-xl font-display font-semibold text-foreground">
+              {isToday(selectedDate)
+                ? `Today, ${format(selectedDate, 'MMM d')}`
+                : format(selectedDate, 'EEE, MMM d')}
+            </h1>
+          </div>
+
+          <button
+            onClick={goToNextDay}
+            className="p-1.5 rounded-md hover:bg-muted transition-colors"
+            aria-label="Next day"
+          >
+            <ChevronRight size={18} className="text-muted-foreground" />
+          </button>
+        </div>
+
+        <p className="text-sm text-muted-foreground font-serif">
+          Week {profile.gestationalAgeWeeks} · ({getTrimesterLabel(trimester)})
+        </p>
       </div>
 
       {/* Alerts */}
@@ -179,7 +240,7 @@ export default function Dashboard() {
       {/* Today's entries */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="section-label">Today's Food Log</p>
+          <p className="section-label">{isToday(selectedDate) ? "Today's Food Log" : `Food Log — ${format(selectedDate, 'MMM d')}`}</p>
           <button
             onClick={() => navigate('/log')}
             className="ghost-button text-xs px-3 py-1.5 rounded-md font-serif uppercase tracking-wider"

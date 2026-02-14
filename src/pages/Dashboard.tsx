@@ -361,8 +361,8 @@ function SmartTips({ totals, recommendations, trimester }: SmartTipsProps) {
             key={i}
             className={`flex items-start gap-3 rounded-lg border px-4 py-3 ${
               tip.type === 'caution'
-                ? 'border-warning/30 bg-warning/5'
-                : 'border-primary/20 bg-primary/5'
+                ? 'border-warning/30 bg-warning/15'
+                : 'border-primary/20 bg-primary/15'
             }`}
           >
             {tip.type === 'caution' ? (

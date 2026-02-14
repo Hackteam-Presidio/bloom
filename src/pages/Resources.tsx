@@ -1,4 +1,4 @@
-import { getProfile } from '@/lib/storage';
+import { getProfile, getDailyLog, getTodayKey } from '@/lib/storage';
 import { getTrimester, getRecommendations } from '@/lib/recommendations';
 import type { NutrientKey } from '@/lib/types';
 
@@ -18,6 +18,19 @@ export default function Resources() {
   const profile = getProfile();
   const trimester = profile ? getTrimester(profile.gestationalAgeWeeks) : 1;
   const targets = getRecommendations(trimester);
+  const log = getDailyLog(getTodayKey());
+
+  const colorMap: Record<NutrientKey, string> = {
+    folate: 'hsl(var(--nutrient-folate))',
+    iron: 'hsl(var(--nutrient-iron))',
+    calcium: 'hsl(var(--nutrient-calcium))',
+    protein: 'hsl(var(--nutrient-protein))',
+    dha: 'hsl(var(--nutrient-dha))',
+    vitaminD: 'hsl(var(--nutrient-vitaminD))',
+    vitaminC: 'hsl(var(--nutrient-vitaminC))',
+    zinc: 'hsl(var(--nutrient-zinc))',
+    omega3: 'hsl(var(--nutrient-omega3))',
+  };
 
   const safetyGuide = [
     // ... keep existing code
@@ -57,7 +70,7 @@ export default function Resources() {
           {targets.map(t => {
             const desc = nutrientDescriptions[t.key];
             return (
-              <div key={t.key} className="rounded-lg border border-border px-4 py-3">
+              <div key={t.key} className="relative rounded-lg border border-border px-4 py-3">
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-sm font-medium text-foreground">{t.name}</p>
                   <span className="text-xs font-mono text-primary">{t.target}{t.unit}/day</span>
@@ -66,6 +79,23 @@ export default function Resources() {
                 <p className="text-xs text-muted-foreground mt-1.5">
                   <span className="font-medium text-foreground/70">Best sources:</span> {desc.source}
                 </p>
+                {/* Mini progress ring */}
+                {(() => {
+                  const current = (log?.totals?.[t.key] ?? 0);
+                  const pct = Math.min(Math.round((current / t.target) * 100), 100);
+                  const r = 10;
+                  const sw = 2.5;
+                  const circ = 2 * Math.PI * r;
+                  const off = circ - (pct / 100) * circ;
+                  return (
+                    <div className="absolute bottom-2 right-3">
+                      <svg width="26" height="26" className="-rotate-90">
+                        <circle cx="13" cy="13" r={r} fill="none" stroke="hsl(var(--border))" strokeWidth={sw} />
+                        <circle cx="13" cy="13" r={r} fill="none" stroke={colorMap[t.key]} strokeWidth={sw} strokeDasharray={circ} strokeDashoffset={off} strokeLinecap="round" />
+                      </svg>
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}

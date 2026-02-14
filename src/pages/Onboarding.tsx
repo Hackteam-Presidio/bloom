@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { saveProfile } from '@/lib/storage';
 import { DietAllergySelector } from '@/components/DietAllergySelector';
+import { BloomFlower } from '@/components/BloomFlower';
 import type { DietaryRestriction, Allergy } from '@/lib/types';
 
 type InputMethod = 'dueDate' | 'lmp' | 'weeks';
@@ -86,18 +87,15 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 animate-fade-in">
       <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary-foreground))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22c6-3 10-9.5 10-13A10 10 0 0 0 2 9c0 3.5 4 10 10 13z" />
-              <path d="M12 22c-6-3-10-9.5-10-13" />
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-foreground">Bloom</h1>
-            <p className="text-xs text-muted-foreground">Your pregnancy nutrition companion</p>
-          </div>
+        {/* Logo & Brand */}
+        <div className="flex flex-col items-center mb-10">
+          <BloomFlower className="w-16 h-16 mb-3" />
+          <h1 className="text-2xl font-display font-semibold text-foreground tracking-tight">
+            <span style={{ fontFamily: 'Nunito, sans-serif' }}>Bloom</span>
+          </h1>
+          <p className="text-xs text-muted-foreground font-serif mt-1 tracking-wide">
+            Your pregnancy nutrition companion
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -121,7 +119,7 @@ export default function Onboarding() {
                   key={m.value}
                   type="button"
                   onClick={() => setMethod(m.value)}
-                  className={`flex-1 text-xs font-medium py-2 rounded-lg border transition-colors ${
+                  className={`flex-1 text-xs font-serif font-medium py-2.5 rounded-lg border transition-colors ${
                     method === m.value
                       ? 'bg-primary text-primary-foreground border-primary'
                       : 'bg-card text-muted-foreground border-border hover:border-primary/50'
@@ -144,7 +142,7 @@ export default function Onboarding() {
                 required
                 className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               />
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-muted-foreground mt-2 font-serif">
                 Your week will automatically update each week
               </p>
             </div>
@@ -160,7 +158,7 @@ export default function Onboarding() {
                 required
                 className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               />
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-muted-foreground mt-2 font-serif">
                 Your week will automatically update each week
               </p>
             </div>
@@ -179,7 +177,7 @@ export default function Onboarding() {
                 required
                 className="w-full bg-card border border-border rounded-lg px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
               />
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-muted-foreground mt-2 font-serif">
                 Your week will automatically advance over time
               </p>
             </div>
@@ -195,7 +193,7 @@ export default function Onboarding() {
           <button
             type="submit"
             disabled={!isValid()}
-            className="w-full bg-primary text-primary-foreground rounded-lg py-3 text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
+            className="w-full bg-primary text-primary-foreground rounded-lg py-3.5 text-sm font-display font-semibold tracking-wide hover:opacity-90 transition-opacity disabled:opacity-40"
           >
             Get Started
           </button>

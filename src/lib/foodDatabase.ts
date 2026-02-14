@@ -68,57 +68,57 @@ export function getFoodCaution(foodName: string): PregnancyCaution | null {
 // Values sourced from USDA FoodData Central
 export const foodDatabase: FoodItem[] = [
   // Proteins
-  { id: 'f1', name: 'Grilled Chicken Breast', category: 'Protein', servingSize: '100g', nutrients: { folate: 6, iron: 1.1, calcium: 15, protein: 31, dha: 0 } },
-  { id: 'f2', name: 'Cooked Salmon', category: 'Protein', servingSize: '100g', nutrients: { folate: 25, iron: 0.8, calcium: 12, protein: 25, dha: 1200 } },
-  { id: 'f3', name: 'Hard-Boiled Egg', category: 'Protein', servingSize: '1 large', nutrients: { folate: 22, iron: 0.6, calcium: 25, protein: 6.3, dha: 40 } },
-  { id: 'f4', name: 'Cooked Lentils', category: 'Protein', servingSize: '1 cup', nutrients: { folate: 358, iron: 6.6, calcium: 38, protein: 18, dha: 0 } },
-  { id: 'f5', name: 'Greek Yogurt', category: 'Protein', servingSize: '1 cup', nutrients: { folate: 18, iron: 0.1, calcium: 230, protein: 20, dha: 0 } },
-  { id: 'f6', name: 'Tofu (firm)', category: 'Protein', servingSize: '100g', nutrients: { folate: 15, iron: 5.4, calcium: 350, protein: 8, dha: 0 } },
-  { id: 'f7', name: 'Lean Ground Beef', category: 'Protein', servingSize: '100g', nutrients: { folate: 8, iron: 2.6, calcium: 18, protein: 26, dha: 0 } },
-  { id: 'f8', name: 'Sardines (canned)', category: 'Protein', servingSize: '100g', nutrients: { folate: 10, iron: 2.9, calcium: 382, protein: 25, dha: 740 } },
+  { id: 'f1', name: 'Grilled Chicken Breast', category: 'Protein', servingSize: '100g', nutrients: { folate: 6, iron: 1.1, calcium: 15, protein: 31, dha: 0, vitaminD: 0.2, vitaminC: 0, zinc: 1.5, omega3: 50 } },
+  { id: 'f2', name: 'Cooked Salmon', category: 'Protein', servingSize: '100g', nutrients: { folate: 25, iron: 0.8, calcium: 12, protein: 25, dha: 1200, vitaminD: 11, vitaminC: 0, zinc: 0.6, omega3: 2260 } },
+  { id: 'f3', name: 'Hard-Boiled Egg', category: 'Protein', servingSize: '1 large', nutrients: { folate: 22, iron: 0.6, calcium: 25, protein: 6.3, dha: 40, vitaminD: 1.1, vitaminC: 0, zinc: 0.5, omega3: 70 } },
+  { id: 'f4', name: 'Cooked Lentils', category: 'Protein', servingSize: '1 cup', nutrients: { folate: 358, iron: 6.6, calcium: 38, protein: 18, dha: 0, vitaminD: 0, vitaminC: 3, zinc: 2.5, omega3: 70 } },
+  { id: 'f5', name: 'Greek Yogurt', category: 'Protein', servingSize: '1 cup', nutrients: { folate: 18, iron: 0.1, calcium: 230, protein: 20, dha: 0, vitaminD: 0.1, vitaminC: 0, zinc: 1.5, omega3: 0 } },
+  { id: 'f6', name: 'Tofu (firm)', category: 'Protein', servingSize: '100g', nutrients: { folate: 15, iron: 5.4, calcium: 350, protein: 8, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 1.0, omega3: 400 } },
+  { id: 'f7', name: 'Lean Ground Beef', category: 'Protein', servingSize: '100g', nutrients: { folate: 8, iron: 2.6, calcium: 18, protein: 26, dha: 0, vitaminD: 0.1, vitaminC: 0, zinc: 5.5, omega3: 50 } },
+  { id: 'f8', name: 'Sardines (canned)', category: 'Protein', servingSize: '100g', nutrients: { folate: 10, iron: 2.9, calcium: 382, protein: 25, dha: 740, vitaminD: 4.8, vitaminC: 0, zinc: 1.3, omega3: 1480 } },
 
-  // Cautionary foods — included so they appear in search
-  { id: 'f31', name: 'Tuna Steak', category: 'Protein', servingSize: '100g', nutrients: { folate: 2, iron: 1.0, calcium: 12, protein: 30, dha: 250 } },
-  { id: 'f32', name: 'Canned Tuna (Light)', category: 'Protein', servingSize: '100g', nutrients: { folate: 3, iron: 1.4, calcium: 11, protein: 26, dha: 200 } },
+  // Cautionary foods
+  { id: 'f31', name: 'Tuna Steak', category: 'Protein', servingSize: '100g', nutrients: { folate: 2, iron: 1.0, calcium: 12, protein: 30, dha: 250, vitaminD: 5.7, vitaminC: 0, zinc: 0.6, omega3: 500 } },
+  { id: 'f32', name: 'Canned Tuna (Light)', category: 'Protein', servingSize: '100g', nutrients: { folate: 3, iron: 1.4, calcium: 11, protein: 26, dha: 200, vitaminD: 1.7, vitaminC: 0, zinc: 0.8, omega3: 400 } },
   { id: 'f33', name: 'Coffee', category: 'Beverage', servingSize: '1 cup (240ml)', nutrients: { folate: 0, iron: 0, calcium: 5, protein: 0.3, dha: 0 } },
-  { id: 'f34', name: 'Soft Cheese (Unpasteurized)', category: 'Dairy', servingSize: '30g', nutrients: { folate: 6, iron: 0.1, calcium: 150, protein: 6, dha: 0 } },
-  { id: 'f35', name: 'Raw Sushi', category: 'Protein', servingSize: '6 pieces', nutrients: { folate: 5, iron: 0.5, calcium: 10, protein: 15, dha: 300 } },
-  { id: 'f36', name: 'Deli Meat', category: 'Protein', servingSize: '100g', nutrients: { folate: 2, iron: 0.8, calcium: 10, protein: 18, dha: 0 } },
-  { id: 'f37', name: 'Raw Sprouts', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 16, iron: 0.5, calcium: 10, protein: 1.5, dha: 0 } },
+  { id: 'f34', name: 'Soft Cheese (Unpasteurized)', category: 'Dairy', servingSize: '30g', nutrients: { folate: 6, iron: 0.1, calcium: 150, protein: 6, dha: 0, vitaminD: 0.2, vitaminC: 0, zinc: 0.6, omega3: 0 } },
+  { id: 'f35', name: 'Raw Sushi', category: 'Protein', servingSize: '6 pieces', nutrients: { folate: 5, iron: 0.5, calcium: 10, protein: 15, dha: 300, vitaminD: 2, vitaminC: 0, zinc: 0.4, omega3: 600 } },
+  { id: 'f36', name: 'Deli Meat', category: 'Protein', servingSize: '100g', nutrients: { folate: 2, iron: 0.8, calcium: 10, protein: 18, dha: 0, vitaminD: 0.1, vitaminC: 0, zinc: 1.8, omega3: 0 } },
+  { id: 'f37', name: 'Raw Sprouts', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 16, iron: 0.5, calcium: 10, protein: 1.5, dha: 0, vitaminD: 0, vitaminC: 5, zinc: 0.3, omega3: 20 } },
 
   // Vegetables
-  { id: 'f9', name: 'Cooked Spinach', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 263, iron: 6.4, calcium: 245, protein: 5.3, dha: 0 } },
-  { id: 'f10', name: 'Broccoli', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 168, iron: 1.0, calcium: 62, protein: 3.7, dha: 0 } },
-  { id: 'f11', name: 'Sweet Potato', category: 'Vegetable', servingSize: '1 medium', nutrients: { folate: 6, iron: 0.7, calcium: 38, protein: 2, dha: 0 } },
-  { id: 'f12', name: 'Kale (cooked)', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 17, iron: 1.2, calcium: 94, protein: 2.5, dha: 0 } },
-  { id: 'f13', name: 'Asparagus', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 268, iron: 2.9, calcium: 41, protein: 4.3, dha: 0 } },
-  { id: 'f14', name: 'Avocado', category: 'Vegetable', servingSize: '1 medium', nutrients: { folate: 163, iron: 1.1, calcium: 24, protein: 4, dha: 0 } },
+  { id: 'f9', name: 'Cooked Spinach', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 263, iron: 6.4, calcium: 245, protein: 5.3, dha: 0, vitaminD: 0, vitaminC: 17.6, zinc: 1.4, omega3: 160 } },
+  { id: 'f10', name: 'Broccoli', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 168, iron: 1.0, calcium: 62, protein: 3.7, dha: 0, vitaminD: 0, vitaminC: 81, zinc: 0.6, omega3: 190 } },
+  { id: 'f11', name: 'Sweet Potato', category: 'Vegetable', servingSize: '1 medium', nutrients: { folate: 6, iron: 0.7, calcium: 38, protein: 2, dha: 0, vitaminD: 0, vitaminC: 19.6, zinc: 0.3, omega3: 10 } },
+  { id: 'f12', name: 'Kale (cooked)', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 17, iron: 1.2, calcium: 94, protein: 2.5, dha: 0, vitaminD: 0, vitaminC: 53, zinc: 0.3, omega3: 120 } },
+  { id: 'f13', name: 'Asparagus', category: 'Vegetable', servingSize: '1 cup', nutrients: { folate: 268, iron: 2.9, calcium: 41, protein: 4.3, dha: 0, vitaminD: 0, vitaminC: 13.8, zinc: 0.7, omega3: 20 } },
+  { id: 'f14', name: 'Avocado', category: 'Vegetable', servingSize: '1 medium', nutrients: { folate: 163, iron: 1.1, calcium: 24, protein: 4, dha: 0, vitaminD: 0, vitaminC: 20, zinc: 1.3, omega3: 220 } },
 
   // Grains
-  { id: 'f15', name: 'Fortified Cereal', category: 'Grain', servingSize: '1 cup', nutrients: { folate: 400, iron: 18, calcium: 100, protein: 3, dha: 0 } },
-  { id: 'f16', name: 'Brown Rice', category: 'Grain', servingSize: '1 cup cooked', nutrients: { folate: 8, iron: 0.8, calcium: 20, protein: 5, dha: 0 } },
-  { id: 'f17', name: 'Whole Wheat Bread', category: 'Grain', servingSize: '1 slice', nutrients: { folate: 30, iron: 1.0, calcium: 30, protein: 3.6, dha: 0 } },
-  { id: 'f18', name: 'Oatmeal', category: 'Grain', servingSize: '1 cup cooked', nutrients: { folate: 14, iron: 2.1, calcium: 21, protein: 5.9, dha: 0 } },
+  { id: 'f15', name: 'Fortified Cereal', category: 'Grain', servingSize: '1 cup', nutrients: { folate: 400, iron: 18, calcium: 100, protein: 3, dha: 0, vitaminD: 3.5, vitaminC: 27, zinc: 3.8, omega3: 0 } },
+  { id: 'f16', name: 'Brown Rice', category: 'Grain', servingSize: '1 cup cooked', nutrients: { folate: 8, iron: 0.8, calcium: 20, protein: 5, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 1.2, omega3: 30 } },
+  { id: 'f17', name: 'Whole Wheat Bread', category: 'Grain', servingSize: '1 slice', nutrients: { folate: 30, iron: 1.0, calcium: 30, protein: 3.6, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 0.5, omega3: 30 } },
+  { id: 'f18', name: 'Oatmeal', category: 'Grain', servingSize: '1 cup cooked', nutrients: { folate: 14, iron: 2.1, calcium: 21, protein: 5.9, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 2.3, omega3: 40 } },
 
   // Dairy & Calcium
-  { id: 'f19', name: 'Whole Milk', category: 'Dairy', servingSize: '1 cup', nutrients: { folate: 12, iron: 0.1, calcium: 276, protein: 8, dha: 0 } },
-  { id: 'f20', name: 'Cheddar Cheese', category: 'Dairy', servingSize: '30g', nutrients: { folate: 5, iron: 0.2, calcium: 200, protein: 7, dha: 0 } },
-  { id: 'f21', name: 'Cottage Cheese', category: 'Dairy', servingSize: '1 cup', nutrients: { folate: 27, iron: 0.3, calcium: 138, protein: 28, dha: 0 } },
+  { id: 'f19', name: 'Whole Milk', category: 'Dairy', servingSize: '1 cup', nutrients: { folate: 12, iron: 0.1, calcium: 276, protein: 8, dha: 0, vitaminD: 3.2, vitaminC: 0, zinc: 1.0, omega3: 180 } },
+  { id: 'f20', name: 'Cheddar Cheese', category: 'Dairy', servingSize: '30g', nutrients: { folate: 5, iron: 0.2, calcium: 200, protein: 7, dha: 0, vitaminD: 0.3, vitaminC: 0, zinc: 0.9, omega3: 80 } },
+  { id: 'f21', name: 'Cottage Cheese', category: 'Dairy', servingSize: '1 cup', nutrients: { folate: 27, iron: 0.3, calcium: 138, protein: 28, dha: 0, vitaminD: 0.1, vitaminC: 0, zinc: 0.9, omega3: 30 } },
 
   // Fruits
-  { id: 'f22', name: 'Orange', category: 'Fruit', servingSize: '1 medium', nutrients: { folate: 48, iron: 0.1, calcium: 52, protein: 1.2, dha: 0 } },
-  { id: 'f23', name: 'Banana', category: 'Fruit', servingSize: '1 medium', nutrients: { folate: 24, iron: 0.3, calcium: 6, protein: 1.3, dha: 0 } },
-  { id: 'f24', name: 'Strawberries', category: 'Fruit', servingSize: '1 cup', nutrients: { folate: 40, iron: 0.7, calcium: 27, protein: 1.1, dha: 0 } },
-  { id: 'f25', name: 'Mango', category: 'Fruit', servingSize: '1 cup', nutrients: { folate: 71, iron: 0.3, calcium: 18, protein: 1.4, dha: 0 } },
+  { id: 'f22', name: 'Orange', category: 'Fruit', servingSize: '1 medium', nutrients: { folate: 48, iron: 0.1, calcium: 52, protein: 1.2, dha: 0, vitaminD: 0, vitaminC: 70, zinc: 0.1, omega3: 10 } },
+  { id: 'f23', name: 'Banana', category: 'Fruit', servingSize: '1 medium', nutrients: { folate: 24, iron: 0.3, calcium: 6, protein: 1.3, dha: 0, vitaminD: 0, vitaminC: 10.3, zinc: 0.2, omega3: 30 } },
+  { id: 'f24', name: 'Strawberries', category: 'Fruit', servingSize: '1 cup', nutrients: { folate: 40, iron: 0.7, calcium: 27, protein: 1.1, dha: 0, vitaminD: 0, vitaminC: 89, zinc: 0.2, omega3: 100 } },
+  { id: 'f25', name: 'Mango', category: 'Fruit', servingSize: '1 cup', nutrients: { folate: 71, iron: 0.3, calcium: 18, protein: 1.4, dha: 0, vitaminD: 0, vitaminC: 60, zinc: 0.1, omega3: 80 } },
 
   // Nuts & Seeds
-  { id: 'f26', name: 'Almonds', category: 'Nuts & Seeds', servingSize: '30g', nutrients: { folate: 14, iron: 1.1, calcium: 76, protein: 6, dha: 0 } },
-  { id: 'f27', name: 'Chia Seeds', category: 'Nuts & Seeds', servingSize: '2 tbsp', nutrients: { folate: 4, iron: 1.2, calcium: 90, protein: 3, dha: 0 } },
-  { id: 'f28', name: 'Walnuts', category: 'Nuts & Seeds', servingSize: '30g', nutrients: { folate: 28, iron: 0.8, calcium: 28, protein: 4.3, dha: 50 } },
-  { id: 'f29', name: 'Sunflower Seeds', category: 'Nuts & Seeds', servingSize: '30g', nutrients: { folate: 67, iron: 1.8, calcium: 20, protein: 5.5, dha: 0 } },
+  { id: 'f26', name: 'Almonds', category: 'Nuts & Seeds', servingSize: '30g', nutrients: { folate: 14, iron: 1.1, calcium: 76, protein: 6, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 0.9, omega3: 5 } },
+  { id: 'f27', name: 'Chia Seeds', category: 'Nuts & Seeds', servingSize: '2 tbsp', nutrients: { folate: 4, iron: 1.2, calcium: 90, protein: 3, dha: 0, vitaminD: 0, vitaminC: 0, zinc: 0.7, omega3: 2500 } },
+  { id: 'f28', name: 'Walnuts', category: 'Nuts & Seeds', servingSize: '30g', nutrients: { folate: 28, iron: 0.8, calcium: 28, protein: 4.3, dha: 50, vitaminD: 0, vitaminC: 0.4, zinc: 0.9, omega3: 2570 } },
+  { id: 'f29', name: 'Sunflower Seeds', category: 'Nuts & Seeds', servingSize: '30g', nutrients: { folate: 67, iron: 1.8, calcium: 20, protein: 5.5, dha: 0, vitaminD: 0, vitaminC: 0.4, zinc: 1.5, omega3: 20 } },
 
   // Supplements
-  { id: 'f30', name: 'Prenatal Vitamin', category: 'Supplement', servingSize: '1 tablet', nutrients: { folate: 800, iron: 27, calcium: 200, protein: 0, dha: 200 } },
+  { id: 'f30', name: 'Prenatal Vitamin', category: 'Supplement', servingSize: '1 tablet', nutrients: { folate: 800, iron: 27, calcium: 200, protein: 0, dha: 200, vitaminD: 10, vitaminC: 85, zinc: 11, omega3: 400 } },
 ];
 
 export function searchFoods(query: string): FoodItem[] {

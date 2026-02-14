@@ -43,7 +43,7 @@ export interface NutrientTarget {
   colorVar: string;
 }
 
-export type NutrientKey = 'folate' | 'iron' | 'calcium' | 'protein' | 'dha';
+export type NutrientKey = 'folate' | 'iron' | 'calcium' | 'protein' | 'dha' | 'vitaminD' | 'vitaminC' | 'zinc' | 'omega3';
 
 export interface NutrientTotals {
   folate: number;
@@ -51,6 +51,10 @@ export interface NutrientTotals {
   calcium: number;
   protein: number;
   dha: number;
+  vitaminD?: number;
+  vitaminC?: number;
+  zinc?: number;
+  omega3?: number;
 }
 
 export interface FoodEntry {

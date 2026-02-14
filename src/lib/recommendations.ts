@@ -37,6 +37,10 @@ const recommendations: Record<Trimester, NutrientTarget[]> = {
     { name: 'Calcium', key: 'calcium', unit: 'mg', target: 1000, colorVar: '--nutrient-calcium' },
     { name: 'Protein', key: 'protein', unit: 'g', target: 71, colorVar: '--nutrient-protein' },
     { name: 'DHA', key: 'dha', unit: 'mg', target: 200, colorVar: '--nutrient-dha' },
+    { name: 'Vitamin D', key: 'vitaminD', unit: 'mcg', target: 15, colorVar: '--nutrient-vitaminD' },
+    { name: 'Vitamin C', key: 'vitaminC', unit: 'mg', target: 85, colorVar: '--nutrient-vitaminC' },
+    { name: 'Zinc', key: 'zinc', unit: 'mg', target: 11, colorVar: '--nutrient-zinc' },
+    { name: 'Omega-3', key: 'omega3', unit: 'mg', target: 650, colorVar: '--nutrient-omega3' },
   ],
   2: [
     { name: 'Folate', key: 'folate', unit: 'mcg', target: 600, colorVar: '--nutrient-folate' },
@@ -44,6 +48,10 @@ const recommendations: Record<Trimester, NutrientTarget[]> = {
     { name: 'Calcium', key: 'calcium', unit: 'mg', target: 1000, colorVar: '--nutrient-calcium' },
     { name: 'Protein', key: 'protein', unit: 'g', target: 71, colorVar: '--nutrient-protein' },
     { name: 'DHA', key: 'dha', unit: 'mg', target: 300, colorVar: '--nutrient-dha' },
+    { name: 'Vitamin D', key: 'vitaminD', unit: 'mcg', target: 15, colorVar: '--nutrient-vitaminD' },
+    { name: 'Vitamin C', key: 'vitaminC', unit: 'mg', target: 85, colorVar: '--nutrient-vitaminC' },
+    { name: 'Zinc', key: 'zinc', unit: 'mg', target: 11, colorVar: '--nutrient-zinc' },
+    { name: 'Omega-3', key: 'omega3', unit: 'mg', target: 650, colorVar: '--nutrient-omega3' },
   ],
   3: [
     { name: 'Folate', key: 'folate', unit: 'mcg', target: 600, colorVar: '--nutrient-folate' },
@@ -51,6 +59,10 @@ const recommendations: Record<Trimester, NutrientTarget[]> = {
     { name: 'Calcium', key: 'calcium', unit: 'mg', target: 1000, colorVar: '--nutrient-calcium' },
     { name: 'Protein', key: 'protein', unit: 'g', target: 71, colorVar: '--nutrient-protein' },
     { name: 'DHA', key: 'dha', unit: 'mg', target: 300, colorVar: '--nutrient-dha' },
+    { name: 'Vitamin D', key: 'vitaminD', unit: 'mcg', target: 15, colorVar: '--nutrient-vitaminD' },
+    { name: 'Vitamin C', key: 'vitaminC', unit: 'mg', target: 85, colorVar: '--nutrient-vitaminC' },
+    { name: 'Zinc', key: 'zinc', unit: 'mg', target: 11, colorVar: '--nutrient-zinc' },
+    { name: 'Omega-3', key: 'omega3', unit: 'mg', target: 650, colorVar: '--nutrient-omega3' },
   ],
 };
 

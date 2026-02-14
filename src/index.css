@@ -145,7 +145,7 @@
 
 @layer components {
   .section-label {
-    @apply font-serif text-[0.65rem] uppercase tracking-[0.15em] text-muted-foreground;
+    @apply font-serif text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-muted-foreground;
   }
 
   .nutrient-ring {

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { getProfile } from '@/lib/storage';
+import { getProfile, getDailyLog, getTodayKey } from '@/lib/storage';
 import { getTrimester } from '@/lib/recommendations';
 import { useNavigate } from 'react-router-dom';
 import type { ChatMessage } from '@/lib/types';
@@ -45,6 +45,7 @@ export default function Chat() {
           messages: [...messages, userMsg],
           gestationalWeek: profile?.gestationalAgeWeeks || 0,
           trimester,
+          dailyTotals: getDailyLog(getTodayKey()).totals,
         }),
       });
 

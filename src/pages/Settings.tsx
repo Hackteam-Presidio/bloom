@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { getProfile, saveProfile } from '@/lib/storage';
 import { getTrimester, getTrimesterLabel } from '@/lib/recommendations';
 import { useNavigate } from 'react-router-dom';
+import { DietAllergySelector } from '@/components/DietAllergySelector';
+import type { DietaryRestriction, Allergy } from '@/lib/types';
 
 export default function Settings() {
   const [weeks, setWeeks] = useState('');
   const [name, setName] = useState('');
+  const [dietaryRestrictions, setDietaryRestrictions] = useState<DietaryRestriction[]>([]);
+  const [allergies, setAllergies] = useState<Allergy[]>([]);
   const [saved, setSaved] = useState(false);
   const navigate = useNavigate();
 
@@ -14,12 +18,19 @@ export default function Settings() {
     if (!p) { navigate('/onboarding'); return; }
     setWeeks(String(p.gestationalAgeWeeks));
     setName(p.name || '');
+    setDietaryRestrictions(p.dietaryRestrictions || []);
+    setAllergies(p.allergies || []);
   }, [navigate]);
 
   const handleSave = () => {
     const w = parseInt(weeks);
     if (w < 1 || w > 42 || isNaN(w)) return;
-    saveProfile({ gestationalAgeWeeks: w, name: name.trim() || undefined });
+    saveProfile({
+      gestationalAgeWeeks: w,
+      name: name.trim() || undefined,
+      dietaryRestrictions: dietaryRestrictions.length > 0 ? dietaryRestrictions : undefined,
+      allergies: allergies.length > 0 ? allergies : undefined,
+    });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -64,6 +75,13 @@ export default function Settings() {
             </p>
           )}
         </div>
+
+        <DietAllergySelector
+          dietaryRestrictions={dietaryRestrictions}
+          allergies={allergies}
+          onRestrictionsChange={setDietaryRestrictions}
+          onAllergiesChange={setAllergies}
+        />
 
         <button
           onClick={handleSave}

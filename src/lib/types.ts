@@ -1,7 +1,36 @@
+export const DIETARY_RESTRICTIONS = [
+  'Vegetarian',
+  'Vegan',
+  'Pescatarian',
+  'Gluten-Free',
+  'Dairy-Free',
+  'Halal',
+  'Kosher',
+  'Low-Sodium',
+  'Keto',
+] as const;
+
+export const COMMON_ALLERGIES = [
+  'Peanuts',
+  'Tree Nuts',
+  'Shellfish',
+  'Fish',
+  'Eggs',
+  'Milk',
+  'Soy',
+  'Wheat',
+  'Sesame',
+] as const;
+
+export type DietaryRestriction = typeof DIETARY_RESTRICTIONS[number];
+export type Allergy = typeof COMMON_ALLERGIES[number];
+
 export interface UserProfile {
   gestationalAgeWeeks: number;
   dueDate?: string;
   name?: string;
+  dietaryRestrictions?: DietaryRestriction[];
+  allergies?: Allergy[];
 }
 
 export type Trimester = 1 | 2 | 3;

@@ -41,7 +41,7 @@ export function NutrientRing({ percentage, color, size = 100, strokeWidth = 6, l
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-lg font-semibold text-foreground">{Math.round(capped)}%</span>
+          <span className="text-lg font-semibold text-foreground">{Math.round(percentage)}%</span>
         </div>
       </div>
       <div className="text-center">

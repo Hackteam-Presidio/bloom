@@ -145,7 +145,7 @@ export default function Dashboard() {
         </div>
 
         <p className="text-sm text-muted-foreground font-serif">
-          Week {profile.gestationalAgeWeeks} · ({getTrimesterLabel(trimester)})
+          Week {profile.gestationalAgeWeeks} · {getTrimesterLabel(trimester)}
         </p>
       </div>
 

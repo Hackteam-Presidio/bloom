@@ -52,6 +52,16 @@ export function removeFoodEntry(date: string, entryId: string): DailyLog {
   return log;
 }
 
+export function updateFoodEntry(date: string, entryId: string, updated: Partial<FoodEntry>): DailyLog {
+  const logs = getAllLogs();
+  const log = logs[date] || { date, entries: [], totals: { ...emptyTotals } };
+  log.entries = log.entries.map(e => e.id === entryId ? { ...e, ...updated } : e);
+  log.totals = recalcTotals(log.entries);
+  logs[date] = log;
+  saveAllLogs(logs);
+  return log;
+}
+
 function recalcTotals(entries: FoodEntry[]): NutrientTotals {
   return entries.reduce(
     (acc, e) => ({

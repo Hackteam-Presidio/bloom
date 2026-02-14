@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react';
 import { NutrientRing } from '@/components/NutrientRing';
-import { getProfile, getDailyLog, getTodayKey, getConsecutiveLowDays } from '@/lib/storage';
+import { getProfile, getDailyLog, getTodayKey, getConsecutiveLowDays, updateFoodEntry, removeFoodEntry } from '@/lib/storage';
 import { getTrimester, getTrimesterLabel, getWeekRange, getRecommendations } from '@/lib/recommendations';
 import { useNavigate } from 'react-router-dom';
-import type { UserProfile, DailyLog, NutrientKey } from '@/lib/types';
+import type { UserProfile, DailyLog, NutrientKey, FoodEntry, NutrientTotals } from '@/lib/types';
 
 export default function Dashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [log, setLog] = useState<DailyLog | null>(null);
+  const [editingEntry, setEditingEntry] = useState<FoodEntry | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editServing, setEditServing] = useState('');
+  const [editNutrients, setEditNutrients] = useState<NutrientTotals>({ folate: 0, iron: 0, calcium: 0, protein: 0, dha: 0 });
   const navigate = useNavigate();
+
+  const refreshLog = () => setLog(getDailyLog(getTodayKey()));
 
   useEffect(() => {
     const p = getProfile();
@@ -17,8 +23,32 @@ export default function Dashboard() {
       return;
     }
     setProfile(p);
-    setLog(getDailyLog(getTodayKey()));
+    refreshLog();
   }, [navigate]);
+
+  const startEdit = (entry: FoodEntry) => {
+    setEditingEntry(entry);
+    setEditName(entry.name);
+    setEditServing(entry.servingSize);
+    setEditNutrients({ ...entry.nutrients });
+  };
+
+  const saveEdit = () => {
+    if (!editingEntry) return;
+    const updated = updateFoodEntry(getTodayKey(), editingEntry.id, {
+      name: editName,
+      servingSize: editServing,
+      nutrients: { ...editNutrients },
+    });
+    setLog(updated);
+    setEditingEntry(null);
+  };
+
+  const deleteEntry = (id: string) => {
+    const updated = removeFoodEntry(getTodayKey(), id);
+    setLog(updated);
+    setEditingEntry(null);
+  };
 
   if (!profile || !log) return null;
 
@@ -113,16 +143,70 @@ export default function Dashboard() {
         ) : (
           <div className="space-y-2">
             {log.entries.map(entry => (
-              <div key={entry.id} className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
-                <div>
-                  <p className="text-sm font-medium text-foreground">{entry.name}</p>
-                  <p className="text-xs text-muted-foreground">{entry.servingSize}</p>
+              editingEntry?.id === entry.id ? (
+                <div key={entry.id} className="rounded-lg border border-primary/50 bg-card px-4 py-3 space-y-3 animate-slide-up">
+                  <input
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    className="w-full bg-background border border-border rounded-md px-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary"
+                  />
+                  <input
+                    value={editServing}
+                    onChange={e => setEditServing(e.target.value)}
+                    placeholder="Serving size"
+                    className="w-full bg-background border border-border rounded-md px-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary"
+                  />
+                  <div className="grid grid-cols-3 gap-2">
+                    {(['protein', 'iron', 'folate', 'calcium', 'dha'] as const).map(key => (
+                      <div key={key}>
+                        <label className="text-[0.6rem] font-mono uppercase tracking-wider text-muted-foreground">
+                          {key}
+                        </label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          value={editNutrients[key] || ''}
+                          onChange={e => setEditNutrients(prev => ({ ...prev, [key]: parseFloat(e.target.value) || 0 }))}
+                          className="w-full bg-background border border-border rounded-md px-2 py-1 text-xs text-foreground focus:outline-none focus:border-primary"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={saveEdit} className="flex-1 bg-primary text-primary-foreground rounded-md py-1.5 text-xs font-mono uppercase tracking-wider">
+                      Save
+                    </button>
+                    <button onClick={() => setEditingEntry(null)} className="flex-1 ghost-button rounded-md py-1.5 text-xs font-mono uppercase tracking-wider">
+                      Cancel
+                    </button>
+                    <button onClick={() => deleteEntry(entry.id)} className="ghost-button rounded-md py-1.5 text-xs font-mono uppercase tracking-wider text-destructive border-destructive/30 hover:border-destructive">
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-muted-foreground">{entry.nutrients.protein}g protein</p>
-                  <p className="text-xs text-muted-foreground">{entry.nutrients.iron}mg iron</p>
-                </div>
-              </div>
+              ) : (
+                <button
+                  key={entry.id}
+                  onClick={() => startEdit(entry)}
+                  className="w-full text-left flex items-center justify-between rounded-lg border border-border px-4 py-3 hover:border-primary transition-colors cursor-pointer"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{entry.name}</p>
+                    <p className="text-xs text-muted-foreground">{entry.servingSize}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right text-xs text-muted-foreground space-y-0.5">
+                      <p>{entry.nutrients.protein}g protein</p>
+                      <p>{entry.nutrients.iron}mg iron</p>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </div>
+                </button>
+              )
             ))}
           </div>
         )}

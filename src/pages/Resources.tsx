@@ -1,5 +1,26 @@
+import { getProfile } from '@/lib/storage';
+import { getTrimester, getRecommendations } from '@/lib/recommendations';
+import type { NutrientKey } from '@/lib/types';
+
+const nutrientDescriptions: Record<NutrientKey, { why: string; source: string }> = {
+  folate: { why: 'Prevents neural tube defects. Critical in first trimester for spinal cord and brain formation.', source: 'Lentils, spinach, asparagus, fortified cereals' },
+  iron: { why: 'Supports increased blood volume (up to 50% more) and prevents iron-deficiency anemia.', source: 'Red meat, spinach, lentils, fortified cereals' },
+  calcium: { why: "Builds baby's bones and teeth. If intake is low, your body pulls calcium from your own bones.", source: 'Dairy, tofu, sardines, kale' },
+  protein: { why: 'Supports fetal tissue growth including the brain, especially in 2nd and 3rd trimesters.', source: 'Eggs, chicken, Greek yogurt, lentils' },
+  dha: { why: 'Essential omega-3 for brain and retinal development. Needs increase as pregnancy progresses.', source: 'Salmon, sardines, walnuts, chia seeds' },
+  vitaminD: { why: 'Aids calcium absorption and supports immune function. Deficiency linked to preeclampsia risk.', source: 'Salmon, fortified milk, eggs, sunlight exposure' },
+  vitaminC: { why: 'Boosts iron absorption and supports collagen formation for skin, cartilage, and blood vessels.', source: 'Oranges, strawberries, broccoli, bell peppers' },
+  zinc: { why: 'Supports cell division and immune function. Critical for rapid fetal growth.', source: 'Lean beef, pumpkin seeds, lentils, yogurt' },
+  omega3: { why: 'Reduces inflammation and supports cardiovascular health for both mother and baby.', source: 'Salmon, chia seeds, walnuts, sardines' },
+};
+
 export default function Resources() {
+  const profile = getProfile();
+  const trimester = profile ? getTrimester(profile.gestationalAgeWeeks) : 1;
+  const targets = getRecommendations(trimester);
+
   const safetyGuide = [
+    // ... keep existing code
     {
       title: 'Foods to Avoid',
       items: [
@@ -24,7 +45,32 @@ export default function Resources() {
   return (
     <div className="px-5 py-6 max-w-lg mx-auto animate-fade-in">
       <h1 className="text-2xl font-bold text-foreground mb-1">Resources</h1>
-      <p className="text-sm text-muted-foreground mb-6">CDC-based food safety guidance for pregnancy</p>
+      <p className="text-sm text-muted-foreground mb-6">Your nutrient goals and food safety guidance</p>
+
+      {/* Nutrient Goals */}
+      <div className="mb-8">
+        <p className="section-label mb-3">Your Daily Nutrient Goals</p>
+        <p className="text-xs text-muted-foreground mb-4">
+          Targets for {profile ? `week ${profile.gestationalAgeWeeks}` : 'your pregnancy'} based on NIH and CDC recommendations.
+        </p>
+        <div className="space-y-2">
+          {targets.map(t => {
+            const desc = nutrientDescriptions[t.key];
+            return (
+              <div key={t.key} className="rounded-lg border border-border px-4 py-3">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-sm font-medium text-foreground">{t.name}</p>
+                  <span className="text-xs font-mono text-primary">{t.target}{t.unit}/day</span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">{desc.why}</p>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  <span className="font-medium text-foreground/70">Best sources:</span> {desc.source}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       {safetyGuide.map(section => (
         <div key={section.title} className="mb-6">
@@ -50,25 +96,6 @@ export default function Resources() {
         </div>
       ))}
 
-      {/* Key nutrients explanation */}
-      <div className="mb-6">
-        <p className="section-label mb-3">Why These Nutrients Matter</p>
-        <div className="space-y-2">
-          {[
-            { name: 'Folate', why: 'Prevents neural tube defects. Critical in first trimester.', source: 'Lentils, spinach, fortified cereals' },
-            { name: 'Iron', why: 'Supports increased blood volume and prevents anemia.', source: 'Red meat, spinach, fortified cereals' },
-            { name: 'Calcium', why: 'Builds baby\'s bones and teeth.', source: 'Dairy, tofu, sardines, kale' },
-            { name: 'Protein', why: 'Supports fetal tissue growth, especially in 2nd and 3rd trimesters.', source: 'Eggs, chicken, Greek yogurt, lentils' },
-            { name: 'DHA (Omega-3)', why: 'Supports brain and eye development.', source: 'Salmon, sardines, walnuts, chia seeds' },
-          ].map(n => (
-            <div key={n.name} className="rounded-lg border border-border px-4 py-3">
-              <p className="text-sm font-medium text-foreground">{n.name}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{n.why}</p>
-              <p className="text-xs text-muted-foreground mt-1">Sources: {n.source}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Sources */}
       <div className="border-t border-border pt-4">

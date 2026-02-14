@@ -1,1 +1,4 @@
 project_id = "kbvskmhuwqjogoplocpc"
+
+[functions.pregnancy-chat]
+verify_jwt = false

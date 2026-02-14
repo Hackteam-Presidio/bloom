@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [editName, setEditName] = useState('');
   const [editServing, setEditServing] = useState('');
   const [editNutrients, setEditNutrients] = useState<NutrientTotals>({ folate: 0, iron: 0, calcium: 0, protein: 0, dha: 0 });
+  const [showAllNutrients, setShowAllNutrients] = useState(false);
   const navigate = useNavigate();
 
   const refreshLog = () => setLog(getDailyLog(getTodayKey()));
@@ -62,6 +63,10 @@ export default function Dashboard() {
     calcium: 'hsl(var(--nutrient-calcium))',
     protein: 'hsl(var(--nutrient-protein))',
     dha: 'hsl(var(--nutrient-dha))',
+    vitaminD: 'hsl(var(--nutrient-vitaminD))',
+    vitaminC: 'hsl(var(--nutrient-vitaminC))',
+    zinc: 'hsl(var(--nutrient-zinc))',
+    omega3: 'hsl(var(--nutrient-omega3))',
   };
 
   // Alerts for low nutrients
@@ -103,10 +108,18 @@ export default function Dashboard() {
 
       {/* Nutrient rings */}
       <div className="mb-6">
-        <p className="section-label mb-4">Daily Progress</p>
+        <div className="flex items-center justify-between mb-4">
+          <p className="section-label">Daily Progress</p>
+          <button
+            onClick={() => setShowAllNutrients(prev => !prev)}
+            className="ghost-button text-xs px-3 py-1.5 rounded-md font-mono uppercase tracking-wider"
+          >
+            {showAllNutrients ? '− Less' : '+ More'}
+          </button>
+        </div>
         <div className="grid grid-cols-3 gap-4">
-          {recommendations.map(r => {
-            const current = log.totals[r.key];
+          {(showAllNutrients ? recommendations : recommendations.slice(0, 5)).map(r => {
+            const current = (log.totals[r.key] as number) || 0;
             const pct = r.target > 0 ? (current / r.target) * 100 : 0;
             return (
               <NutrientRing
@@ -253,6 +266,10 @@ const boostFoods: Record<NutrientKey, string[]> = {
   folate: ['lentils', 'asparagus', 'spinach', 'fortified cereal'],
   calcium: ['yogurt', 'tofu', 'sardines', 'kale'],
   protein: ['chicken breast', 'greek yogurt', 'lentils', 'eggs'],
+  vitaminD: ['salmon', 'fortified milk', 'eggs', 'sardines'],
+  vitaminC: ['oranges', 'strawberries', 'broccoli', 'bell peppers'],
+  zinc: ['lean beef', 'pumpkin seeds', 'lentils', 'yogurt'],
+  omega3: ['salmon', 'chia seeds', 'walnuts', 'sardines'],
 };
 
 // Nutrient interaction cautions

@@ -55,6 +55,10 @@
     --nutrient-calcium: 200 60% 50%;
     --nutrient-protein: 152 35% 42%;
     --nutrient-dha: 45 80% 50%;
+    --nutrient-vitaminD: 32 85% 55%;
+    --nutrient-vitaminC: 25 90% 55%;
+    --nutrient-zinc: 260 40% 55%;
+    --nutrient-omega3: 190 60% 45%;
   }
 
   .dark {
@@ -104,6 +108,10 @@
     --nutrient-calcium: 200 65% 60%;
     --nutrient-protein: 152 40% 50%;
     --nutrient-dha: 45 85% 55%;
+    --nutrient-vitaminD: 32 90% 60%;
+    --nutrient-vitaminC: 25 95% 60%;
+    --nutrient-zinc: 260 45% 65%;
+    --nutrient-omega3: 190 65% 55%;
   }
 }
 

@@ -60,6 +60,7 @@ export interface NutrientTotals {
   vitaminC?: number;
   zinc?: number;
   omega3?: number;
+  caffeine?: number;
 }
 
 export interface FoodEntry {

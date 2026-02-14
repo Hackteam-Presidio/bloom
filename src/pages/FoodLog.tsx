@@ -56,6 +56,7 @@ export default function FoodLog() {
         calcium: Math.round(selectedFood.nutrients.calcium * q * 10) / 10,
         protein: Math.round(selectedFood.nutrients.protein * q * 10) / 10,
         dha: Math.round(selectedFood.nutrients.dha * q * 10) / 10,
+        caffeine: Math.round((selectedFood.nutrients.caffeine || 0) * q * 10) / 10,
       },
       timestamp: new Date().toISOString(),
     });
@@ -105,6 +106,7 @@ export default function FoodLog() {
           calcium: data.nutrients.calcium || 0,
           protein: data.nutrients.protein || 0,
           dha: data.nutrients.dha || 0,
+          caffeine: data.nutrients.caffeine || 0,
         },
         timestamp: new Date().toISOString(),
       });

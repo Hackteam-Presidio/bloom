@@ -2,7 +2,7 @@
 
 ## Project info
 
-**Live URL**: https://growing-glow-pal.lovable.app/onboarding
+**Live URL**: https://growing-glow-pal.lovable.app/onboarding <br>
 **Video Demo**: https://drive.google.com/file/d/199jQV5UxjT-0i_1mF_NyC14tF0fuvlfz/view
 
 ## How can I edit this code?

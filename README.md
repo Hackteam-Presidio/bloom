@@ -1,8 +1,9 @@
-# Welcome to your Lovable project
+# Welcome to your Lovable project: Bloom
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**Live URL**: https://growing-glow-pal.lovable.app/onboarding
+**Video Demo**: https://drive.google.com/file/d/199jQV5UxjT-0i_1mF_NyC14tF0fuvlfz/view
 
 ## How can I edit this code?
 
